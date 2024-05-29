@@ -1,0 +1,16 @@
+{% extends "navbar.html" %}
+
+{% block title %}
+    {{ username }}'s Shelf
+{% endblock %}
+
+{% block body %}
+    <div class="container">
+        <h2>{{ username }}'s Shelf</h2>
+        <ul>
+            {% for shelf_item in shelf_items %}
+                <li><a href="{% url 'books:book_page' book_name=shelf_item.book.clean_title %}">{{ shelf_item.book.title }}</a></li>
+            {% endfor %}
+        </ul>
+    </div>
+{% endblock %}

@@ -123,6 +123,7 @@ def my_shelf(request,username):
         "username" : username,
         'shelf_items': shelf_items
     })
+    #shelf function
 
 @login_required
 def add_comment(request, id, title):

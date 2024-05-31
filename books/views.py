@@ -9,7 +9,13 @@ from .models import User, Book, Shelf, Comment
 
 # Create your views here.
 def index(request):
-    return render(request, 'index.html')
+    username = request.session.get('username')
+    shelf_items = Shelf.objects.filter(user__username=username)
+    return render(request, "index.html", {
+        'username': username,
+        'shelf_items':shelf_items
+        })
+
 
 def login_view(request):
     if request.method == "POST":
@@ -22,7 +28,8 @@ def login_view(request):
         # Check if authentication successful
         if user is not None:
             login(request,user)
-            return HttpResponseRedirect(reverse("index"))
+            request.session['username'] = username # storing username in current session
+            return HttpResponseRedirect(reverse("books:index"))
         else:
             return render(request, "login.html", {
                 "error_message": "Invalid username and/or password."
@@ -30,11 +37,9 @@ def login_view(request):
     else:
         return render(request, "login.html")
 
-
 def logout_view(request):
     logout(request)
-    return HttpResponseRedirect(reverse("index"))
-
+    return HttpResponseRedirect(reverse("books:index"))
 
 def register(request):
     if request.method == "POST":
@@ -66,7 +71,6 @@ def register(request):
     else:
         return render(request, "register.html")
     
-
 def book_page(request, book_name):
     cleaned_book_name = book_name.lower().replace(' ', '')
     
@@ -113,7 +117,6 @@ def remove_from_shelf(request,book_id):
 
         return redirect('books:book_page', book_name=book.clean_title())
     
-
 def my_shelf(request,username):
     shelf_items = Shelf.objects.filter(user__username=username)
     return render(request,'shelf.html',{

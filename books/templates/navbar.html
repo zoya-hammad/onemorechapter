@@ -75,9 +75,13 @@
                         <li class="nav-item">
                             <a class="nav-link" href="{% url 'posts:new_post' username=user.username %}">New Post</a>
                         </li>
+<li class="nav-item">
+<a class="nav-link" href="{% url 'posts:all_posts' %}">All Posts</a>
+</li>
                         <li class="nav-item">
                             <a class="nav-link" href="{% url 'books:logout' %}">Sign Out</a>
                         </li>
+                        
                     {% else %}
                         <li class="nav-item">
                             <a class="nav-link" href="{% url 'books:login' %}">Sign In</a>
@@ -100,3 +104,4 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 </body>
 </html>
+

@@ -1,0 +1,110 @@
+{% extends 'navbar.html' %}
+
+{% block title %}
+    More Posts
+{% endblock %}
+
+{% block body %}
+    <h1>More Posts</h1>
+    
+    <style>
+        body{
+background-color: #fbf6ef;
+font-family: 'Roboto', sans-serif; /* Font style */
+color: #664229;
+}
+
+h1{
+            margin-top: 20px;
+            margin-bottom: 20px;
+color: #664229;
+font-family:Arial, Helvetica, sans-serif;
+
+
+        
+        }
+        .post-card {
+            background-color: #f9f9f9;
+border: 1px solid #ebdfcc;
+            border-radius: 5px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+        .post-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .post-header h3 {
+            margin: 0;
+            font-size: 18px;
+        }
+        .post-content {
+            margin-top: 10px;
+        }
+        .post-content p {
+            margin: 0;
+        }
+        .post-content img {
+            max-width: 100%;
+            height: auto;
+            margin-top: 10px;
+        }
+        .post-footer {
+            margin-top: 10px;
+        }
+        .post-footer small {
+            font-size: 12px;
+        }
+        .read-more-link {
+            display: inline-block;
+            color: #007bff;
+            text-decoration: none;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+    </style>
+    
+    <div class="post-feed">
+        {% if posts %}
+            {% for post in posts %}
+                <div class="post-card">
+                    <div class="post-header">
+                        <h3>{{ post.title }}</h3>
+                        {% if post.user != request.user %}
+                            <div class="follow-button">
+                                {% if post.user in request.user.follows.all %}
+                                    <form method="post" action="{% url 'posts:unfollow' post.user.username %}">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="next" value="{{ request.path }}">
+                                        <button type="submit">Unfollow</button>
+                                    </form>
+                                {% else %}
+                                    <form method="post" action="{% url 'posts:follow' post.user.username %}">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="next" value="{{ request.path }}">
+                                        <button type="submit">Follow</button>
+                                    </form>
+                                {% endif %}
+                            </div>
+                        {% endif %}
+                    </div>
+                    <div class="post-content">
+                        <p>{{ post.text }}</p>
+                        {% if post.image %}
+                            <img src="{{ post.image.url }}" alt="Post image">
+                        {% endif %}
+                    </div>
+                    <div class="post-footer">
+                        <p><small>{{ post.timestamp }}</small></p>
+                        <p><em>By {{ post.user.username }}</em></p>
+                        <a href="{% url 'posts:post_page' post.id %}">Read More</a>
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p>No more posts to show.</p>
+        {% endif %}
+    </div>
+    
+{% endblock %}

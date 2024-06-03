@@ -1,0 +1,17 @@
+{% extends "navbar.html" %}
+{% block body %}
+
+<div class="alert alert-warning" role="alert">
+  We couldn't find '{{ search_query }}'.
+</div>
+
+{% if partial_matches %}
+  <h2>Partial Matches:</h2>
+  <ul class="list-group">
+    {% for book in partial_matches %}
+      <li class="list-group-item"><a href="{% url 'books:book_page' book.title %}" style="color: black;">{{ book.title }}</a></li>
+    {% endfor %}
+  </ul>
+{% endif %}
+
+{% endblock %}

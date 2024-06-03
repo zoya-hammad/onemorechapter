@@ -151,4 +151,3 @@ def search(request):
         except Book.DoesNotExist:
             return HttpResponse('No book found with that title.')
     return render(request, 'search.html')
-

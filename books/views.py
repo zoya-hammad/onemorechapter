@@ -140,8 +140,6 @@ def add_comment(request, id, title):
         else:
             return redirect('books:book_page', book_name=book.clean_title())
 
-<<<<<<< HEAD
-=======
 def search(request):
     if request.method == 'POST':
         query = request.POST.get('search_input')
@@ -153,4 +151,3 @@ def search(request):
         except Book.DoesNotExist:
             return HttpResponse('No book found with that title.')
     return render(request, 'search.html')
->>>>>>> 84d4489ef185c59171ddcc83f53117b126b764e0

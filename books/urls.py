@@ -15,4 +15,3 @@ urlpatterns = [
     path('add_comment/<int:id>/<str:title>/', views.add_comment, name='add_comment'),
     path('searchbar/', views.search, name="search")
 ]
-

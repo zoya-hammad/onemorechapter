@@ -91,9 +91,12 @@
                         <li class="nav-item">
                             <a class="nav-link" href="{% url 'posts:all_posts' %}">All Posts</a>
                         </li>
-                        <form class="form-inline search-form">
-                            <input class="form-control mr-sm-2 search-input"  type="search" aria-label="Search">
+                        <form class="form-inline search-form" method="post" action="{% url 'books:search' %}">
+                            {% csrf_token %}
+                            <input class="form-control mr-sm-2 search-input" name="search_input" type="search" aria-label="Search">
+                            <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
                         </form>
+                        
 
                         <li class="nav-item">
                             <a class="nav-link sign-out-btn" href="{% url 'books:logout' %}">

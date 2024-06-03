@@ -5,7 +5,7 @@
 {% endblock %}
 
 {% block body %}
-    <h1>{{user.username}}'s feed</h1>
+    <h1>{{ user.username }}'s feed</h1>
     
     <style>
         body {
@@ -79,6 +79,10 @@
             text-decoration: none;
             font-weight: bold;
         }
+
+        .view-more-button {
+            margin-top: 20px;
+        }
     </style>
     
     <div class="post-feed">
@@ -99,5 +103,15 @@
                 </div>
             </div>
         {% endfor %}
+        
+        {% if not posts %}
+            <p>No more posts to show.</p>
+        {% endif %}
     </div>
+    
+    {% if more_posts %}
+        <form action="{% url 'posts:more_posts' %}" method="get" class="view-more-button">
+            <button type="submit">View More Posts</button>
+        </form>
+    {% endif %}
 {% endblock %}

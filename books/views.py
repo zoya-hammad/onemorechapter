@@ -140,4 +140,3 @@ def add_comment(request, id, title):
         else:
             return redirect('books:book_page', book_name=book.clean_title())
 
-

@@ -56,4 +56,3 @@ def more_posts(request, username):
 def all_posts(request):
     posts = Post.objects.all().order_by('-timestamp')
     return render(request, 'all_posts.html', {'posts': posts})
-

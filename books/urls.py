@@ -13,5 +13,6 @@ urlpatterns = [
     path('removefromshelf/<int:book_id>/', views.remove_from_shelf, name="remove_from_shelf"),
     path('<str:username>/shelf/', views.my_shelf, name='my_shelf'),
     path('add_comment/<int:id>/<str:title>/', views.add_comment, name='add_comment'),
-    path('searchbar/', views.search, name="search")
+    path('searchbar/', views.search, name="search"),
+
 ]

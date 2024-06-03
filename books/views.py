@@ -146,16 +146,6 @@ def clean_title(title):
 def search(request):
     if request.method == 'POST':
         query = request.POST.get('search_input')
-<<<<<<< HEAD
-        clean_query = query.lower().replace(' ', '')
-        try:
-            books = Book.objects.filter(title__icontains=clean_query)
-            matching_book = books.first().clean_title()
-            return redirect('books:book_page', book_name=matching_book)
-        except Book.DoesNotExist:
-            return HttpResponse('No book found with that title.')
-    return render(request, 'search.html')
-=======
         clean_query = query.lower().replace(' ', '') 
         all_titles = Book.objects.values_list('title', flat=True)
         exact_match = [title for title in all_titles if clean_title(title) == clean_query]
@@ -175,5 +165,3 @@ def search(request):
 
 
     
-
->>>>>>> 9706097969b3044767ce8847e79596d7ad3a2482

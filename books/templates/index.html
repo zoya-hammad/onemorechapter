@@ -2,15 +2,67 @@
 
 {% block body %}
     <style>
+        body {
+background-color: #efe2cf; /* Light grey background */
+            font-family: 'Roboto', sans-serif; /* Font style */
+            color: #664229;
+        }
+        .container {
+            margin-top: 20px;
+        }
         .card {
+            background-color: #ebdfcc; /* Light tan background */
+            border-radius: 10px;
+            box-shadow: 0 4px 8px #664229;
             margin-bottom: 20px;
-            height : 280px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            height: 100%;
         }
         .card-img-top {
-            height: 100%; 
+            height: 200px; 
             object-fit: contain; 
+            border-top-left-radius: 10px;
+            border-top-right-radius: 10px;
         }
-
+        .card-body {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            text-align: center;
+            padding: 10px;
+        }
+        .card-title {
+            font-weight: 700;
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+        }
+        .card-text {
+            font-weight: 400;
+            margin-bottom: 15px;
+        }
+        .btn-primary {
+            background-color: #25911194; /* Pastel green */
+            border-color: #a8ff61; /* Pastel green */
+            font-weight: 500;
+        }
+        .btn-primary:hover {
+            background-color: #259325; /* Darker pastel green on hover */
+            border-color: #40ff80; /* Darker pastel green on hover */
+        }
+        h2 {
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+        a {
+            color: #664229;
+            text-decoration: none;
+        }
+        a:hover {
+            color: #53381c;
+            text-decoration: underline;
+        }
     </style>
 
     <div class="container">
@@ -20,12 +72,12 @@
             <div class="row">
                 {% for item in shelf_items %}
                     <div class="col-md-3 mb-4">
-                        <div class="card">
+                        <div class="card h-100">
                             <img src="{{ item.book.image.url }}" class="card-img-top" alt="{{ item.book.title }}">
                             <div class="card-body">
                                 <h5 class="card-title">{{ item.book.title }}</h5>
-                                <p class="card-text">{{ item.book.author }}</p>
-                                <a href="{% url 'books:book_page' item.book.title %}" class="btn btn-primary">View Details</a>
+                                <p class="card-text">{{ item.book.author.author_name }}</p>
+                                <a href="{% url 'books:book_page' item.book.clean_title %}" class="btn btn-primary mt-auto">View Details</a>
                             </div>
                         </div>
                     </div>
@@ -34,3 +86,5 @@
         {% endif %}
     </div>
 {% endblock %}
+
+

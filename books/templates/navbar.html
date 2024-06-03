@@ -6,10 +6,60 @@
     <title>{% block title %}My Site{% endblock %}</title>
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
     <!-- Custom CSS -->
     <style>
         .navbar-custom {
-            background-color: #000000; /* True black */
+            background-color: #002147; 
+        }
+
+        .navbar-nav {
+            align-items: center;
+            display: flex;
+            flex-direction: row;
+        }
+
+        .search-form {
+            margin-right: 10px;
+        }
+
+        .search-input {
+            background-color: rgba(0, 33, 71, 0.7);
+            border: 1px solid #f1e7e7;
+            color: #ffffff;
+            padding: 0.375rem 0.75rem;
+            border-radius: 20px;
+            width: 200px;
+            transition: background-color 0.3s, border-color 0.3s, color 0.3s;
+        }
+
+        .search-input::placeholder {
+            color: #ffffff;
+        }
+
+        .search-input:focus {
+            background-color: rgba(0, 33, 71, 0.7);
+            border-color: #666666;
+            color: #ffffff;
+            outline: none;
+            box-shadow: none;
+        }
+
+        .search-input:-webkit-autofill,
+        .search-input:-webkit-autofill:hover, 
+        .search-input:-webkit-autofill:focus, 
+        .search-input:-webkit-autofill:active {
+            -webkit-box-shadow: 0 0 0px 1000px rgba(0, 33, 71, 0.7) inset !important;
+            -webkit-text-fill-color: #ffffff !important;
+        }
+
+        .sign-out-icon {
+            color: #ffffff;
+        }
+
+        .sign-out-btn {
+            color: #ffffff;
         }
     </style>
 </head>
@@ -22,13 +72,15 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ml-auto">
-                    <!-- Links for Logged in User -->
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'books:index' %}">Home</a>
+                    </li>
                     {% if user.is_authenticated %}
                         <li class="nav-item">
-                            <a class="nav-link" href="{% url 'books:index'%}">Home</a>
+                            <a class="nav-link" href="{% url 'books:my_shelf' username=user.username %}">My Shelf</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="{% url 'books:my_shelf' username=user.username %}">My Shelf</a>
+                            <a class="nav-link" href="#">Genre</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="{% url 'posts:post_feed' username=user.username %}">Feed</a>
@@ -37,8 +89,20 @@
                             <a class="nav-link" href="{% url 'posts:new_post' username=user.username %}">New Post</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="{% url 'books:logout' %}">Sign Out</a>
+                            <a class="nav-link" href="{% url 'posts:all_posts' %}">All Posts</a>
                         </li>
+                        <form class="form-inline search-form">
+                            <input class="form-control mr-sm-2 search-input"  type="search" aria-label="Search">
+                        </form>
+
+                        <li class="nav-item">
+                            <a class="nav-link sign-out-btn" href="{% url 'books:logout' %}">
+                                <span class="sign-out-icon" data-toggle="tooltip" title="Sign Out">
+                                    <i class="fas fa-sign-out-alt"></i>
+                                </span>
+                            </a>
+                        </li>
+
                     {% else %}
                         <li class="nav-item">
                             <a class="nav-link" href="{% url 'books:login' %}">Sign In</a>
@@ -48,6 +112,7 @@
                         </li>
                     {% endif %}
                 </ul>
+                
             </div>
         </div>
     </nav>
@@ -56,5 +121,9 @@
         {% block body %}{% endblock %}
     </div>
 
+    <!-- Bootstrap JS (optional) -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>

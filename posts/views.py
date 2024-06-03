@@ -1,6 +1,8 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, HttpResponseRedirect
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import get_object_or_404, redirect
 
 from books.models import User
 from .models import Post
@@ -41,4 +43,17 @@ def post_page(request,id):
     return render(request, 'post_page.html',{
             "post" : post
         })
-    
+     
+def more_posts(request, username):
+    user = User.objects.get(username=username)
+    followed_users = user.follows.all()
+    posts = Post.objects.filter(user__in=followed_users).order_by('-timestamp')
+    return render(request, 'more_posts.html', {
+        'posts': posts,
+        'user': user
+    })
+
+def all_posts(request):
+    posts = Post.objects.all().order_by('-timestamp')
+    return render(request, 'all_posts.html', {'posts': posts})
+

@@ -14,3 +14,4 @@ urlpatterns = [
     path('<str:username>/shelf/', views.my_shelf, name='my_shelf'),
     path('add_comment/<int:id>/<str:title>/', views.add_comment, name='add_comment'),
 ]
+

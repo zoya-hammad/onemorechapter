@@ -146,25 +146,20 @@ def clean_title(title):
 def search(request):
     if request.method == 'POST':
         query = request.POST.get('search_input')
-        clean_query = query.lower().replace(' ', '')
-        try:  
-            all_titles = Book.objects.values_list('title', flat=True)
-            exact_match = [title for title in all_titles if clean_title(title) == clean_query]
+        clean_query = query.lower().replace(' ', '') 
+        all_titles = Book.objects.values_list('title', flat=True)
+        exact_match = [title for title in all_titles if clean_title(title) == clean_query]
         
-            if exact_match:
-                return redirect('books:book_page', book_name=exact_match[0])
+        if exact_match:
+            return redirect('books:book_page', book_name=exact_match[0])
             
-            else:
-                partial_matches = [title for title in all_titles if clean_query in clean_title(title)]
-                return render(request, 'partial_matches.html', {
-                    'partial_matches': partial_matches,
-                    'search_query' : query
-                    }
-                    
-                    )
-        
-        except Book.DoesNotExist:
-            return HttpResponse('No book found with that title.')
+        else:
+            partial_matches = [title for title in all_titles if clean_query in clean_title(title)]
+            return render(request, 'partial_matches.html', {
+                'partial_matches': partial_matches,
+                'search_query' : query
+                }  
+            )
     else:
         return render(request, 'search.html')
 

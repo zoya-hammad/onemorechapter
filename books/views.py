@@ -139,15 +139,29 @@ def add_comment(request, id, title):
             return redirect('books:book_page', book_name=book.clean_title())
         else:
             return redirect('books:book_page', book_name=book.clean_title())
+        
+def clean_title(title):
+    return title.lower().replace(' ', '')
 
 def search(request):
     if request.method == 'POST':
         query = request.POST.get('search_input')
-        clean_query = query.lower().replace(' ', '')
-        try:
-            books = Book.objects.filter(title__icontains=clean_query)
-            matching_book = books.first().clean_title()
-            return redirect('books:book_page', book_name=matching_book)
-        except Book.DoesNotExist:
-            return HttpResponse('No book found with that title.')
-    return render(request, 'search.html')
+        clean_query = query.lower().replace(' ', '') 
+        all_titles = Book.objects.values_list('title', flat=True)
+        exact_match = [title for title in all_titles if clean_title(title) == clean_query]
+        
+        if exact_match:
+            return redirect('books:book_page', book_name=exact_match[0])
+            
+        else:
+            partial_matches = [title for title in all_titles if clean_query in clean_title(title)]
+            return render(request, 'partial_matches.html', {
+                'partial_matches': partial_matches,
+                'search_query' : query
+                }  
+            )
+    else:
+        return render(request, 'search.html')
+
+
+    

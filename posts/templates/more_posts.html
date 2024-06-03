@@ -8,54 +8,60 @@
     <h1>More Posts</h1>
     
     <style>
-        body{
-background-color: #fbf6ef;
-font-family: 'Roboto', sans-serif; /* Font style */
-color: #664229;
-}
+        body {
+            background-color: #fbf6ef;
+            font-family: 'Roboto', sans-serif;
+            color: #664229;
+        }
 
-h1{
+        h1 {
             margin-top: 20px;
             margin-bottom: 20px;
-color: #664229;
-font-family:Arial, Helvetica, sans-serif;
-
-
-        
+            color: #664229;
+            font-family: Arial, Helvetica, sans-serif;
         }
+
         .post-card {
             background-color: #f9f9f9;
-border: 1px solid #ebdfcc;
+            border: 1px solid #ebdfcc;
             border-radius: 5px;
             padding: 15px;
             margin-bottom: 20px;
         }
+
         .post-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
+
         .post-header h3 {
             margin: 0;
             font-size: 18px;
         }
+
         .post-content {
             margin-top: 10px;
         }
+
         .post-content p {
             margin: 0;
         }
+
         .post-content img {
             max-width: 100%;
             height: auto;
             margin-top: 10px;
         }
+
         .post-footer {
             margin-top: 10px;
         }
+
         .post-footer small {
             font-size: 12px;
         }
+
         .read-more-link {
             display: inline-block;
             color: #007bff;
@@ -106,5 +112,4 @@ border: 1px solid #ebdfcc;
             <p>No more posts to show.</p>
         {% endif %}
     </div>
-    
 {% endblock %}

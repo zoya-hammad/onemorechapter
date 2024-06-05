@@ -5,7 +5,7 @@ from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, HttpResponseRedirect
 from django.db import IntegrityError
 
-from .models import User, Book, Shelf, Comment
+from .models import User, Book, Shelf, Comment, Author
 
 # Create your views here.
 def index(request):
@@ -163,5 +163,16 @@ def search(request):
     else:
         return render(request, 'search.html')
 
+def authors_list(request):
+    authors = Author.objects.all()
+    return render(request, 'authors_list.html', {
+        'authors': authors
+    })
 
-    
+def author_detail(request, author_id):
+    author = Author.objects.get(id=author_id)
+    books_by_author = Book.objects.filter(author=author)
+    return render(request, 'author_detail.html', {
+        'author': author,
+        'books_by_author': books_by_author
+    })

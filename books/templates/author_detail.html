@@ -1,0 +1,83 @@
+{% extends "navbar.html" %}
+
+{% block title %}
+    {{ author.author_name }}
+{% endblock %}
+
+{% block body %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ author.author_name }}</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            background-color: #fbf6ef;
+            font-family: 'Roboto', sans-serif;
+            color: #664229;
+        }
+        .container {
+            margin-top: 20px;
+        }
+        .author-details {
+            background-color: #ece4d8;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px #664229;
+            margin-bottom: 20px;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+        .author-image {
+            max-width: 200px;
+            height: auto;
+            margin-bottom: 20px;
+        }
+        .btn-primary {
+            background-color: #002147; 
+            border-color: #032955;
+            font-weight: 500;
+        }
+        .btn-primary:hover {
+            background-color: #093e7a; 
+            border-color: #40ff80;
+        }
+        .card {
+            background-color: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px #664229;
+            margin-bottom: 20px;
+        }
+        .card-text {
+            margin-bottom: 0;
+        }
+        h1, h2, h3, h5 {
+            font-weight: 700;
+        }
+        p, li, a {
+            font-weight: 400;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="author-details">
+        <h1>{{ author.author_name }}</h1>
+        <img src="{{ author.image.url }}" alt="{{ author.author_name }}" class="img-fluid author-image">
+        <p><strong>Date of Birth:</strong> {{ author.date_of_birth }}</p>
+        <p><strong>Date of Death:</strong> {% if author.date_of_death %}{{ author.date_of_death }}{% else %}N/A{% endif %}</p>
+        <h3>Books by {{ author.author_name }}</h3>
+        <ul>
+            {% for book in books_by_author %}
+                <li><a href="{% url 'books:book_page' book.title %}">{{ book.title }}</a></li>
+            {% endfor %}
+        </ul>
+    </div>
+</div>
+
+</body>
+</html>
+
+{% endblock %}

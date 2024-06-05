@@ -164,10 +164,12 @@ def search(request):
         return render(request, 'search.html')
 
 def authors_list(request):
-    authors = Author.objects.all()
-    return render(request, 'authors_list.html', {
-        'authors': authors
-    })
+    search_query = request.GET.get('search', '')
+    if search_query:
+        authors = Author.objects.filter(author_name__icontains=search_query)
+    else:
+        authors = Author.objects.all()
+    return render(request, 'authors_list.html', {'authors': authors, 'search_query': search_query})
 
 def author_detail(request, author_id):
     author = Author.objects.get(id=author_id)
@@ -176,3 +178,4 @@ def author_detail(request, author_id):
         'author': author,
         'books_by_author': books_by_author
     })
+

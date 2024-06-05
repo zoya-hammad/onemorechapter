@@ -5,81 +5,141 @@
 {% endblock %}
 
 {% block body %}
-    <style>
-        body {
-            background-color: #fbf6ef; /* Light grey background */
-            font-family: 'Roboto', sans-serif; /* Font style */
-            color: #664229;
-        }
-        .container {
-            margin-top: 20px;
-        }
-        .card {
-            background-color: #ece4d8; /* Light tan background */
-            border-radius: 10px;
-            box-shadow: 0 4px 8px #664229;
-            margin-bottom: 20px;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            height: 100%;
-        }
-        .card-img-top {
-            height: 200px; 
-            object-fit: contain; 
-            border-top-left-radius: 10px;
-            border-top-right-radius: 10px;
-        }
-        .card-body {
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            text-align: center;
-            padding: 10px;
-        }
-        .card-title {
-            font-weight: 700;
-            font-size: 1.2rem;
-            margin-bottom: 10px;
-        }
-        .btn-primary {
-            background-color: #25911194; /* Pastel green */
-            border-color: #a8ff61; /* Pastel green */
-            font-weight: 500;
-        }
-        .btn-primary:hover {
-            background-color: #259325; /* Darker pastel green on hover */
-            border-color: #40ff80; /* Darker pastel green on hover */
-        }
-        h1 {
-            font-weight: 700;
-            margin-bottom: 20px;
-            text-align: center;
-        }
-        a {
-            color: #664229;
-            text-decoration: none;
-        }
-        a:hover {
-            color: #53381c;
-            text-decoration: underline;
-        }
-    </style>
+<style>
+    body {
+        background-color: #fbf6ef; /* Light grey background */
+        font-family: 'Roboto', sans-serif; /* Font style */
+        color: #664229;
+    }
+    .container {
+        margin-top: 20px;
+    }
+    .card {
+        background-color: #ece4d8; /* Light tan background */
+        border-radius: 10px;
+        box-shadow: 0 4px 8px #664229;
+        margin-bottom: 20px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        height: 100%;
+    }
+    .card-img-top {
+        height: 200px; 
+        object-fit: contain; 
+        border-top-left-radius: 10px;
+        border-top-right-radius: 10px;
+    }
+    .card-body {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        text-align: center;
+        padding: 10px;
+    }
+    .card-title {
+        font-weight: 700;
+        font-size: 1.2rem;
+        margin-bottom: 10px;
+    }
+    .btn-primary {
+        background-color: #25911194; /* Pastel green */
+        border-color: #a8ff61; /* Pastel green */
+        font-weight: 500;
+    }
+    .btn-primary:hover {
+        background-color: #259325; /* Darker pastel green on hover */
+        border-color: #40ff80; /* Darker pastel green on hover */
+    }
+    h1 {
+        font-weight: 700;
+        margin-bottom: 20px;
+        text-align: center;
+    }
+    a {
+        color: #664229;
+        text-decoration: none;
+    }
+    a:hover {
+        color: #53381c;
+        text-decoration: underline;
+    }
 
-    <div class="container">
-        <h1>Authors</h1>
-        <div class="row">
-            {% for author in authors %}
-                <div class="col-md-4 mb-4">
-                    <div class="card h-100">
-                        <img src="{{ author.image.url }}" class="card-img-top" alt="{{ author.author_name }}">
-                        <div class="card-body">
-                            <h5 class="card-title">{{ author.author_name }}</h5>
-                            <a href="{% url 'books:author_detail' author.id %}" class="btn btn-primary mt-auto">View Details</a>
-                        </div>
+    .alert {
+        background-color: #f8d7da; /* Light red background */
+        color: #721c24; /* Dark red text */
+        border: 1px solid #f5c6cb; /* Border matching the alert background */
+        border-radius: 10px;
+        padding: 20px;
+        margin-bottom: 20px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        display: flex;
+        align-items: center;
+    }
+    .alert-icon {
+        margin-right: 10px;
+        font-size: 24px;
+    }
+    .search-container {
+        display: flex;
+/* border-radius: 25px; */
+/*justify-content: center;*/
+margin-bottom: 20px;
+    }
+    .search-input {
+        padding: 10px;
+
+
+        border: 1px solid #664229;
+border-radius: 5px 0 0 5px;
+        outline: none;
+        font-size: 16px;
+    }
+    .search-button {
+        padding: 10px 20px;
+        background-color: #25911194; /* Pastel green */
+        border: 1px solid #a8ff61;
+        border-radius: 0 5px 5px 0;
+        color: white;
+        font-weight: 500;
+        cursor: pointer;
+        transition: background-color 0.3s;
+    }
+    .search-button:hover {
+        background-color: #259325; /* Darker pastel green on hover */
+    }
+</style>
+
+<div class="container">
+    <!-- Search bar container -->
+    <form method="GET" action="{% url 'books:authors_list' %}">
+        <div class="search-container">
+            <input type="text" id="searchInput" name="search" class="search-input" placeholder="Search for authors..." value="{{ request.GET.search|default:'' }}">
+            <button type="submit" class="search-button">Search</button>
+        </div>
+    </form>
+
+    <h1>Authors</h1>
+    <div class="row">
+        {% for author in authors %}
+            <div class="col-md-4 mb-4">
+                <div class="card h-100">
+                    <img src="{{ author.image.url }}" class="card-img-top" alt="{{ author.author_name }}">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ author.author_name }}</h5>
+                        <a href="{% url 'books:author_detail' author.id %}" class="btn btn-primary mt-auto">View Details</a>
                     </div>
                 </div>
-            {% endfor %}
-        </div>
+            </div>
+        {% endfor %}
     </div>
+
+    {% if not authors %}
+        <div class="mt-3 alert alert-warning" role="alert">
+            <i class="fas fa-exclamation-triangle alert-icon"></i>
+            We couldn't find '{{ request.GET.search }}'.
+        </div>
+    {% endif %}
+</div>
+
 {% endblock %}

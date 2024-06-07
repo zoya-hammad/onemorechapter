@@ -45,8 +45,8 @@ class Book(models.Model):
     genres = models.ManyToManyField(Genre)
     
 
-    def __str__(self):
-        return f'{self.title} - {self.author}'
+    # def __str__(self):
+    #     return f'{self.title} - {self.author}'
 
     def clean_title(self):
         return self.title.lower().replace(' ', '')

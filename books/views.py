@@ -4,16 +4,21 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, HttpResponseRedirect
 from django.db import IntegrityError
+from django.db.models import Count
 
 from .models import User, Book, Shelf, Comment, Author
 
 # Create your views here.
 def index(request):
-    username = request.session.get('username')
-    shelf_items = Shelf.objects.filter(user__username=username)
+    if request.user.is_authenticated:
+        username = request.session.get('username')
+        shelf_items = Shelf.objects.filter(user__username=username)
+    popular_books = Book.objects.annotate(num_shelves=Count('shelf')).order_by('-num_shelves')[:3]
+    
     return render(request, "index.html", {
         'username': username,
-        'shelf_items':shelf_items
+        'shelf_items':shelf_items,
+        'popular_books': popular_books
         })
 
 

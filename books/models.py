@@ -7,6 +7,9 @@ class User(AbstractUser):
 
     def __str__(self):
         return self.username
+    
+    def user_follows(self, user):
+        return self.follows.filter(id=user.id).exists()
 
 class Author(models.Model):
     id = models.AutoField(primary_key=True)

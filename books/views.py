@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
@@ -6,7 +6,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.db import IntegrityError
 from django.db.models import Count
 
-from .models import User, Book, Shelf, Comment, Author
+from .models import User, Book, Shelf, Comment, Author, Genre
 
 # Create your views here.
 def index(request):
@@ -183,6 +183,38 @@ def author_detail(request, author_id):
         'author': author,
         'books_by_author': books_by_author
     })
+
+def genres_list(request):
+    genres = Genre.objects.all()
+    genres_with_books = []
+    for genre in genres:
+        books_for_genre = Book.objects.filter(genres=genre)[:3]
+        genres_with_books.append({
+            'genre': genre,
+            'books': books_for_genre
+        })
+    return render(request, 'genres_list.html', {'genres_with_books': genres_with_books})
+
+'''
+def genre_detail(request, genre_id):
+    genre= Genre.objects.get(id=genre_id)
+    books_for_genre= Book.objects.filter(genre=genre)
+    return render(request, 'genre_detail.html',{
+        'genre':genre,
+        'books_for_genre':books_for_genre
+
+    }) '''
+
+def genre_detail(request, genre_id):
+    genre = get_object_or_404(Genre, id=genre_id)
+    books_for_genre = Book.objects.filter(genres=genre)
+    return render(request, 'genre_detail.html', {
+        'genre': genre,
+        'books_for_genre': books_for_genre
+    })
+
+
+
 
 
 

@@ -18,6 +18,8 @@ urlpatterns = [
     path('authors/', views.authors_list, name='authors_list'),
     
     path('authors/<int:author_id>/', views.author_detail, name='author_detail'),
+    path('genres/',views.genres_list,name='genres_list'),
+    path('genres/<int:genre_id>/' ,views.genre_detail,name='genre_detail'),
 
 ]
 

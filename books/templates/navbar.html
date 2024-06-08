@@ -63,14 +63,50 @@
         }
 
         .dropdown-item {
-    color: grey !important;
-    }
+            color: grey !important;
+        }
 
+        .dropdown-toggle:focus {
+            box-shadow: none !important;
+            outline: none !important;
+        }
 
-    .dropdown-toggle:focus {
-        box-shadow: none !important;
-        outline: none !important;
-    }
+        .nav-link {
+            color: #ffffff !important;
+        }
+        
+        .nav-link:hover {
+            color: #dddddd !important;
+        }
+
+        /* Additional styles for the dropdown */
+        .nav-item.dropdown:hover .dropdown-menu {
+            display: block;
+        }
+
+        .dropdown-toggle::after {
+            display: inline-block;
+            margin-left: .255em;
+            vertical-align: .255em;
+            content: "\f078"; /* FontAwesome icon for dropdown */
+            font-family: 'FontAwesome';
+        }
+
+        .nav-item.dropdown .nav-link::after {
+            display: inline-block;
+            margin-left: .255em;
+            vertical-align: .255em;
+            content: "\f078"; /* FontAwesome icon for dropdown */
+            font-family: 'FontAwesome';
+        }
+
+        .nav-item.dropdown > .dropdown-toggle::after {
+            display: none; /* Hide the dropdown icon on the main "Genres" link */
+        }
+
+        .nav-item.dropdown > .dropdown-toggle.nav-link {
+            padding-right: 1.5rem; /* Add padding to the right to avoid overlap */
+        }
     </style>
 </head>
 <body>
@@ -89,24 +125,21 @@
                         <li class="nav-item">
                             <a class="nav-link" href="{% url 'books:my_shelf' username=user.username %}">My Shelf</a>
                         </li>
-                        
-                        <div class="dropdown">
-                            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="background-color: #002147; border: none;">
-                              <span style="color:  #CCCCCC">Genre</span>
-                            </button>
-                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton" style="background-color: #002147;">
-                              {% for genre in genres %}
-                                <a class="dropdown-item" href="#" style="color: grey;">{{ genre.name }}</a>
-                              {% endfor %}
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="{% url 'books:genres_list' %}" id="navbarDropdown" role="button">
+                                Genres
+                            </a>
+                            <div class="dropdown-menu" aria-labelledby="navbarDropdown" style="background-color: #002147;">
+                                {% for genre in genres %}
+                                    <a class="dropdown-item" href="{% url 'books:genre_detail' genre.id %}" style="color: grey;">{{ genre.name }}</a>
+                                {% endfor %}
                             </div>
-                          </div>
-                          
+                        </li>
 
                         <li class="nav-item">
                             <a class="nav-link" href="{% url 'books:authors_list' %}">Authors</a>
                         </li>
 
-                        
                         <li class="nav-item">
                             <a class="nav-link" href="{% url 'posts:post_feed' username=user.username %}">Feed</a>
                         </li>
@@ -121,7 +154,6 @@
                             <input class="form-control mr-sm-2 search-input" name="search_input" type="search" aria-label="Search">
                             <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
                         </form>
-                        
 
                         <li class="nav-item">
                             <a class="nav-link sign-out-btn" href="{% url 'books:logout' %}">
@@ -130,7 +162,6 @@
                                 </span>
                             </a>
                         </li>
-
                     {% else %}
                         <li class="nav-item">
                             <a class="nav-link" href="{% url 'books:login' %}">Sign In</a>
@@ -140,7 +171,6 @@
                         </li>
                     {% endif %}
                 </ul>
-                
             </div>
         </div>
     </nav>
@@ -156,5 +186,4 @@
 </body>
 </html>
 
-<!-- In Django templates, the "% block %" tags define placeholders where child templates can insert their own content. -->
-<!--  "% block title %" tag in the <title> element of your base template allows you to dynamically set the page title in any child template that extends this base template.-->
+

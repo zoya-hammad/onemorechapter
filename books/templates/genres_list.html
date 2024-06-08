@@ -1,0 +1,98 @@
+{% extends "navbar.html" %}
+
+{% block title %}
+    Genres
+{% endblock %}
+
+{% block body %}
+<style>
+    body {
+        background-color: #fbf6ef; /* Light grey background */
+        font-family: 'Roboto', sans-serif; /* Font style */
+        color: #664229;
+    }
+    .container {
+        margin-top: 20px;
+    }
+    .card {
+        background-color: #ece4d8; /* Light tan background */
+        border-radius: 10px;
+        box-shadow: 0 4px 8px #664229;
+        margin-bottom: 20px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        height: 100%;
+    }
+    .card-img-top {
+        height: 200px; 
+        object-fit: contain; 
+        border-top-left-radius: 10px;
+        border-top-right-radius: 10px;
+    }
+    .card-body {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        text-align: center;
+        padding: 10px;
+    }
+    .card-title {
+        font-weight: 700;
+        font-size: 1.2rem;
+        margin-bottom: 10px;
+    }
+    .btn-primary {
+        background-color: #25911194; /* Pastel green */
+        border-color: #a8ff61; /* Pastel green */
+        font-weight: 500;
+    }
+    .btn-primary:hover {
+        background-color: #259325; /* Darker pastel green on hover */
+        border-color: #40ff80; /* Darker pastel green on hover */
+    }
+    h1 {
+        font-weight: 700;
+        margin-bottom: 20px;
+        text-align: center;
+    }
+    a {
+        color: #664229;
+        text-decoration: none;
+    }
+    a:hover {
+        color: #53381c;
+        text-decoration: underline;
+    }
+</style>
+
+<br>
+<h1>Genres</h1>
+<div class="container">
+    {% for genre_with_books in genres_with_books %}
+        <div class="genre-section">
+            <h2><a href="{% url 'books:genre_detail' genre_with_books.genre.id %}">{{ genre_with_books.genre.name }}</a></h2>
+            <div class="row">
+                {% for book in genre_with_books.books %}
+                    <div class="col-md-4">
+                        <div class="card">
+                            <img src="{{ book.image.url }}" class="card-img-top" alt="{{ book.title }}">
+                            <div class="card-body">
+                                <h5 class="card-title">{{ book.title }}</h5>
+                                <p class="card-text">by {{ book.author.author_name }}</p>
+                                <a href="{% url 'books:book_page' book.clean_title %}" class="btn btn-primary">View Book</a>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+        <br>
+        <br>
+    {% endfor %}
+    
+    
+    
+</div>
+
+{% endblock %}

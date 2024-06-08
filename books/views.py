@@ -165,3 +165,19 @@ def search(request):
 
 
     
+# import render: Renders a template with a given context.
+# When you call render, Django takes the specified template, fills it with the data from the context, and returns the complete HTML page as an HttpResponse.
+
+# redirect: Redirects to another URL.
+# reverse: Resolves URL names to actual URLs.
+# authenticate: Verifies a user's credentials. (login, logout etc)
+# HttpResponse is used to send content back to the client.
+# HttpResponseRedirect is a subclass of HttpResponse specifically used for redirecting the client to a different URL. 
+# IntegrityError: Exception raised for database integrity issues
+
+
+# def index(request): func that takes a http request (acc to a particular url)
+
+# in the login view: if request.method == "POST": indicates that the form has been submitted 
+
+# cleaned_book_name: makes it easier to match books by conv to lowercase and removing spaces 

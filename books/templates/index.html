@@ -1,17 +1,18 @@
-{% extends "navbar.html" %}
-
+{% extends "navbar.html" %} 
+ 
 {% block body %}
     <style>
+        
         body {
-background-color: #fbf6ef; /* Light grey background */
-            font-family: 'Roboto', sans-serif; /* Font style */
+            background-color: #fbf6ef; /* Light grey background */ 
+            font-family: 'Roboto', sans-serif; /* Font style */ 
             color: #664229;
         }
         .container {
             margin-top: 20px;
         }
         .card {
-background-color: #ece4d8; /* Light tan background */
+            background-color: #ece4d8; /* Light tan background */
             border-radius: 10px;
             box-shadow: 0 4px 8px #664229;
             margin-bottom: 20px;
@@ -63,6 +64,8 @@ background-color: #ece4d8; /* Light tan background */
             color: #53381c;
             text-decoration: underline;
         }
+
+    
     </style>
 
     <div class="container">
@@ -83,7 +86,22 @@ background-color: #ece4d8; /* Light tan background */
                     </div>
                 {% endfor %}
             </div>
+
+            
         {% endif %}
+
+        
     </div>
+
+    
+
+
 {% endblock %}
 
+
+    <!-- The "% for %"" tag is used for looping over a sequence in Django templates. -->
+    <!--  creates a card for each item w each card displaying the book's image, title, author name, and a link to the book's detail page.-->
+    <!-- DTL Tags: "% ... %" are used for logic-->
+    <!-- "{{ ... }}" are used for outputting variables.-->
+    <!--"% extends "navbar.html" %"  :  inherits from the navbar.html template.  -->
+    <!-- "% block body %" :This block of code will be inserted into a placeholder in the navbar.html template. -->

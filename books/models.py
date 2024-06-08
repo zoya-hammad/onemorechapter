@@ -21,7 +21,6 @@ class Author(models.Model):
 
     def __str__(self):
         return self.author_name
-    
 
 
 class Genre(models.Model):
@@ -71,4 +70,25 @@ class Comment(models.Model):
     book = models.ForeignKey(Book, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
+
+
+
+# notes:
+
+# User class: 
+# - AbstractUser: you get all the fields and functionalities provided by Django's default user model (username, password, email, etc.)
+# - follows: This is a ManyToManyField that allows users to follow each other
+# - self': This indicates that the field is a reference to the same model (User). 
+#       symmetrical=False: This means the relationship is not necessarily symmetrical. If User A follows User B, it doesn't automatically mean that User B follows User A.
+#       related_name='followers': This allows you to access the followers of a user. 
+# - related_name='followers': This specifies the name to use for the reverse relation from the User model to itself when accessing the followers of a user. helps access access related objects in a reverse direction.
+# - __self__ method: convert the object to a string to to provide a human-readable representation of the model instance.
+
+
+# Author class: 
+# id: set as PK automatically
+# images uploaded to the images/authors directory.
+
+# Shelf class: 
+# on_delete=models.CASCADE -> means that when a referenced object (book or user) is deleted, then it will also be deleted from the shelfs table 
 

@@ -10,10 +10,12 @@ from .models import User, Book, Shelf, Comment, Author
 
 # Create your views here.
 def index(request):
-    if request.user.is_authenticated:
-        username = request.session.get('username')
-        shelf_items = Shelf.objects.filter(user__username=username)
+    username = request.session.get('username')
     popular_books = Book.objects.annotate(num_shelves=Count('shelf')).order_by('-num_shelves')[:3]
+
+    shelf_items = None
+    if request.user.is_authenticated:
+        shelf_items = Shelf.objects.filter(user__username=username)
     
     return render(request, "index.html", {
         'username': username,

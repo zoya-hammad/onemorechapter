@@ -9,7 +9,11 @@ urlpatterns =[
     path('submit/', views.submit_post, name='submit_post'),
     path('post/<int:id>/', views.post_page, name='post_page'),
     path('more_posts/<str:username>/', views.more_posts, name='more_posts'),
-    path('all_posts/', views.all_posts, name='all_posts')
+    path('all_posts/', views.all_posts, name='all_posts'),
+    path('follow/<int:user_id>/', views.follow, name="follow_user"),
+    path('unfollow/<int:user_id>/', views.unfollow, name="unfollow_user"),
+    path('add_comment/<int:id>/<str:title>/', views.add_comment, name="add_comment")
+    
     
 ]
 

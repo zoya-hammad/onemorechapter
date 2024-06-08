@@ -15,16 +15,8 @@ urlpatterns = [
     path('add_comment/<int:id>/<str:title>/', views.add_comment, name='add_comment'),
     path('searchbar/', views.search, name="search"),
 
-]
-
-
-# app_name = "books" so that there are no conflicts (incase of multiple apps)
-
-    # index: 
-    #User Request: A user makes a request to the root URL of the "books" app.
-    #URL Routing: Django checks urls.py and finds that the root URL should be handled by the index view.
-    #View Processing: The index view in views.py retrieves the username from the session, queries the database for the user's shelf items, and prepares a context dictionary.
-    #Template Rendering: The index view calls render, passing the request, template name (index.html), and context. Django processes the template, inserting the context data into the placeholders.
-    #Response: Django returns the rendered HTML page to the user's browser.
-
+    path('authors/', views.authors_list, name='authors_list'),
     
+    path('authors/<int:author_id>/', views.author_detail, name='author_detail'),
+
+]

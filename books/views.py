@@ -4,16 +4,21 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, HttpResponseRedirect
 from django.db import IntegrityError
+from django.db.models import Count
 
-from .models import User, Book, Shelf, Comment
+from .models import User, Book, Shelf, Comment, Author
 
 # Create your views here.
 def index(request):
-    username = request.session.get('username')
-    shelf_items = Shelf.objects.filter(user__username=username)
+    if request.user.is_authenticated:
+        username = request.session.get('username')
+        shelf_items = Shelf.objects.filter(user__username=username)
+    popular_books = Book.objects.annotate(num_shelves=Count('shelf')).order_by('-num_shelves')[:3]
+    
     return render(request, "index.html", {
         'username': username,
-        'shelf_items':shelf_items
+        'shelf_items':shelf_items,
+        'popular_books': popular_books
         })
 
 
@@ -163,21 +168,19 @@ def search(request):
     else:
         return render(request, 'search.html')
 
+def authors_list(request):
+    search_query = request.GET.get('search', '')
+    if search_query:
+        authors = Author.objects.filter(author_name__icontains=search_query)
+    else:
+        authors = Author.objects.all()
+    return render(request, 'authors_list.html', {'authors': authors, 'search_query': search_query})
 
-    
-# import render: Renders a template with a given context.
-# When you call render, Django takes the specified template, fills it with the data from the context, and returns the complete HTML page as an HttpResponse.
+def author_detail(request, author_id):
+    author = Author.objects.get(id=author_id)
+    books_by_author = Book.objects.filter(author=author)
+    return render(request, 'author_detail.html', {
+        'author': author,
+        'books_by_author': books_by_author
+    })
 
-# redirect: Redirects to another URL.
-# reverse: Resolves URL names to actual URLs.
-# authenticate: Verifies a user's credentials. (login, logout etc)
-# HttpResponse is used to send content back to the client.
-# HttpResponseRedirect is a subclass of HttpResponse specifically used for redirecting the client to a different URL. 
-# IntegrityError: Exception raised for database integrity issues
-
-
-# def index(request): func that takes a http request (acc to a particular url)
-
-# in the login view: if request.method == "POST": indicates that the form has been submitted 
-
-# cleaned_book_name: makes it easier to match books by conv to lowercase and removing spaces 

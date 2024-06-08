@@ -61,6 +61,16 @@
         .sign-out-btn {
             color: #ffffff;
         }
+
+        .dropdown-item {
+    color: grey !important;
+    }
+
+
+    .dropdown-toggle:focus {
+        box-shadow: none !important;
+        outline: none !important;
+    }
     </style>
 </head>
 <body>
@@ -79,9 +89,24 @@
                         <li class="nav-item">
                             <a class="nav-link" href="{% url 'books:my_shelf' username=user.username %}">My Shelf</a>
                         </li>
+                        
+                        <div class="dropdown">
+                            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="background-color: #002147; border: none;">
+                              <span style="color:  #CCCCCC">Genre</span>
+                            </button>
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton" style="background-color: #002147;">
+                              {% for genre in genres %}
+                                <a class="dropdown-item" href="#" style="color: grey;">{{ genre.name }}</a>
+                              {% endfor %}
+                            </div>
+                          </div>
+                          
+
                         <li class="nav-item">
-                            <a class="nav-link" href="#">Genre</a>
+                            <a class="nav-link" href="{% url 'books:authors_list' %}">Authors</a>
                         </li>
+
+                        
                         <li class="nav-item">
                             <a class="nav-link" href="{% url 'posts:post_feed' username=user.username %}">Feed</a>
                         </li>

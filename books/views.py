@@ -19,6 +19,7 @@ def index(request):
     popular_books = Book.objects.annotate(num_shelves=Count('shelf')).order_by('-num_shelves')[:3]
 
     shelf_items = None
+  
     recommended_books = []
     if request.user.is_authenticated:
         user = request.user

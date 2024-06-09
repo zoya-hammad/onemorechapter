@@ -89,6 +89,7 @@
         {% endfor %}
     </div>
 
+    {% if user.is_authenticated %}
     <h2><a href="{% url 'books:recommended_top_picks' %}">Recommended Top Picks</a></h2>
     <div class="recommended-books">
         {% for book in recommended_books %}
@@ -102,6 +103,7 @@
             </div>
         {% endfor %}
     </div>
+    {% endif %}
 
     <div class="container">
         {% if user.is_authenticated %}

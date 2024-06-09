@@ -4,24 +4,48 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, HttpResponseRedirect
 from django.db import IntegrityError
-from django.db.models import Count
+from django.db.models import Count, Q
 
 from .models import User, Book, Shelf, Comment, Author, Genre
+import random
 
 # Create your views here.
+
+from django.db.models import Count, Q
+import random
+
 def index(request):
     username = request.session.get('username')
     popular_books = Book.objects.annotate(num_shelves=Count('shelf')).order_by('-num_shelves')[:3]
 
     shelf_items = None
+    recommended_books = []
     if request.user.is_authenticated:
-        shelf_items = Shelf.objects.filter(user__username=username)
-    
+        user = request.user
+        shelf_items = Shelf.objects.filter(user=user)
+        shelf_book_ids = shelf_items.values_list('book_id', flat=True)
+        
+        # Determine the most read genres
+        top_genres = Shelf.objects.filter(user=user).values('book__genres').annotate(count=Count('book__genres')).order_by('-count')
+        
+        # Determine the top recommended books based on the most read genre
+        if top_genres:
+            top_genre_id = top_genres[0]['book__genres']
+            recommended_books = Book.objects.filter(genres=top_genre_id).exclude(id__in=shelf_book_ids)[:3]
+
+        # If not enough books found, select random books not in shelf
+        if len(recommended_books) < 3:
+            remaining_books_needed = 3 - len(recommended_books)
+            random_books = Book.objects.exclude(id__in=shelf_book_ids).order_by('?')[:remaining_books_needed]
+            recommended_books = list(recommended_books) + list(random_books)
+        
     return render(request, "index.html", {
         'username': username,
-        'shelf_items':shelf_items,
-        'popular_books': popular_books
-        })
+        'shelf_items': shelf_items,
+        'popular_books': popular_books,
+        'recommended_books': recommended_books
+    })
+
 
 
 def login_view(request):
@@ -216,9 +240,50 @@ def genre_detail(request, genre_id):
     })
 
 
+@login_required
+def recommended_top_picks(request):
+    user = request.user
 
+    # Helper functions to get top genres and author
+    def get_user_top_genre(user, rank):
+        genres = Shelf.objects.filter(user=user).values('book__genres').annotate(count=Count('book__genres')).order_by('-count')
+        if rank <= len(genres):
+            return Genre.objects.get(id=genres[rank-1]['book__genres'])
+        return None
 
+    def get_user_top_author(user):
+        authors = Shelf.objects.filter(user=user).values('book__author').annotate(count=Count('book__author')).order_by('-count')
+        if authors:
+            return Author.objects.get(id=authors[0]['book__author'])
+        return None
 
+    def get_books_not_in_shelf(user, genre=None, author=None):
+        shelf_book_ids = Shelf.objects.filter(user=user).values_list('book_id', flat=True)
+        if genre:
+            return Book.objects.filter(genres=genre).exclude(id__in=shelf_book_ids)[:6]
+        if author:
+            return Book.objects.filter(author=author).exclude(id__in=shelf_book_ids)[:6]
+        return Book.objects.exclude(id__in=shelf_book_ids)[:6]
+
+    # Get user's top genres and author
+    top_genre1 = get_user_top_genre(user, 1)
+    top_genre2 = get_user_top_genre(user, 2)
+    top_author = get_user_top_author(user)
+
+    # Get books for the genres and author excluding those in the user's shelf
+    top_genre1_books = get_books_not_in_shelf(user, genre=top_genre1)
+    top_genre2_books = get_books_not_in_shelf(user, genre=top_genre2)
+    top_author_books = get_books_not_in_shelf(user, author=top_author)
+
+    context = {
+        'top_genre1': top_genre1,
+        'top_genre2': top_genre2,
+        'top_genre1_books': top_genre1_books,
+        'top_genre2_books': top_genre2_books,
+        'top_author': top_author,
+        'top_author_books': top_author_books,
+    }
+    return render(request, 'recommended_top_picks.html', context)
 
 
     

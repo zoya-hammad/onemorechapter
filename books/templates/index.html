@@ -63,6 +63,15 @@
             width: 100%;
             object-fit: contain;
         }
+        .recommended-books {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+        }
+        .recommended-books .card {
+            width: 30%;
+            margin-right: 10px;
+        }
     </style>
 
     <h1>Most Popular Books This Month</h1>
@@ -74,7 +83,21 @@
                     <h2 class="card-title">{{ book.title }}</h2>
                     <p class="card-text">Author: {{ book.author }}</p>
                     <p class="card-text">Number of Shelves: {{ book.num_shelves }}</p>
-                    <a href="#" class="btn btn-primary">View Details</a>
+                    <a href="{% url 'books:book_page' book.clean_title %}" class="btn btn-primary">View Details</a>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+
+    <h2><a href="{% url 'books:recommended_top_picks' %}">Recommended Top Picks</a></h2>
+    <div class="recommended-books">
+        {% for book in recommended_books %}
+            <div class="card">
+                <img src="{{ book.image.url }}" alt="{{ book.title }}" class="card-img-top">
+                <div class="card-body">
+                    <h2 class="card-title">{{ book.title }}</h2>
+                    <p class="card-text">Author: {{ book.author }}</p>
+                    <a href="{% url 'books:book_page' book.clean_title %}" class="btn btn-primary">View Details</a>
                 </div>
             </div>
         {% endfor %}
@@ -97,19 +120,9 @@
                             </div>
                         </div>
                     </div>
-                
                 {% endfor %}
             </div>
             {% endif %}
         {% endif %}
     </div>
 {% endblock %}
-
-
-    <!-- The "% for %"" tag is used for looping over a sequence in Django templates. -->
-    <!--  creates a card for each item w each card displaying the book's image, title, author name, and a link to the book's detail page.-->
-    <!-- DTL Tags: "% ... %" are used for logic-->
-    <!-- "{{ ... }}" are used for outputting variables.-->
-    <!--"% extends "navbar.html" %"  :  inherits from the navbar.html template.  -->
-    <!-- "% block body %" :This block of code will be inserted into a placeholder in the navbar.html template. -->
-

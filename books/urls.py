@@ -20,9 +20,8 @@ urlpatterns = [
     path('authors/<int:author_id>/', views.author_detail, name='author_detail'),
     path('genres/',views.genres_list,name='genres_list'),
     path('genres/<int:genre_id>/' ,views.genre_detail,name='genre_detail'),
-
+     path('recommended_top_picks/', views.recommended_top_picks, name='recommended_top_picks'),  
 ]
-
 
 # app_name = "books" so that there are no conflicts (incase of multiple apps)
 

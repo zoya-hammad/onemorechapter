@@ -4,7 +4,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, HttpResponseRedirect
 from django.db import IntegrityError
-from django.db.models import Count, Q
+from django.db.models import Count, Q, Min
 
 from .models import User, Book, Shelf, Comment, Author, Genre
 import random
@@ -285,9 +285,132 @@ def recommended_top_picks(request):
         'top_author_books': top_author_books,
     }
     return render(request, 'recommended_top_picks.html', context)
+'''
+@login_required
+def user_stats(request):
+    user = request.user
+
+    # Helper function to get top genres
+    def get_top_genres(user, limit):
+        genres = (
+            Shelf.objects.filter(user=user)
+            .values('book__genres')
+            .annotate(count=Count('book__genres'))
+            .order_by('-count')[:limit]
+        )
+        return [
+            {
+                'genre': Genre.objects.get(id=genre['book__genres']),
+                'count': genre['count']
+            }
+            for genre in genres
+        ]
+
+    # Helper function to get top authors
+    def get_top_authors(user, limit):
+        authors = (
+            Shelf.objects.filter(user=user)
+            .values('book__author')
+            .annotate(count=Count('book__author'))
+            .order_by('-count')[:limit]
+        )
+        return [
+            {
+                'author': Author.objects.get(id=author['book__author']),
+                'count': author['count']
+            }
+            for author in authors
+        ]
+
+    top_genres = get_top_genres(user, 3)
+    top_authors = get_top_authors(user, 3)
+
+    context = {
+        'top_genres': top_genres,
+        'top_authors': top_authors,
+    }
+
+    return render(request, 'user_stats.html', context)
+'''
+
+@login_required
+def user_stats(request):
+    user = request.user
+
+    # Helper function to get top genres
+    def get_top_genres(user, limit):
+        genres = (
+            Shelf.objects.filter(user=user)
+            .values('book__genres')
+            .annotate(count=Count('book__genres'))
+            .order_by('-count')[:limit]
+        )
+        return [
+            {
+                'genre': Genre.objects.get(id=genre['book__genres']),
+                'count': genre['count']
+            }
+            for genre in genres
+        ]
+
+    # Helper function to get top authors
+    def get_top_authors(user, limit):
+        authors = (
+            Shelf.objects.filter(user=user)
+            .values('book__author')
+            .annotate(count=Count('book__author'))
+            .order_by('-count')[:limit]
+        )
+        return [
+            {
+                'author': Author.objects.get(id=author['book__author']),
+                'count': author['count']
+            }
+            for author in authors
+        ]
+
+    # Get top genres and authors
+    top_genres = get_top_genres(user, 3)
+    top_authors = get_top_authors(user, 3)
+
+    # Get the most popular book in the user's shelf
+    most_popular_book = None
+    if user.is_authenticated:
+        # Get the list of books shelved by the most users
+        most_shelved_books = (
+            Shelf.objects.values('book')
+            .annotate(num_users=Count('user', distinct=True))
+            .order_by('-num_users')
+        )
+        # Iterate over each book to find the one with the highest number of shelves in the user's shelf
+        max_shelves = 0
+        for shelved_book in most_shelved_books:
+            book = Book.objects.get(id=shelved_book['book'])
+            num_shelves = book.shelf_set.filter(user=user).count()
+            if num_shelves > max_shelves:
+                max_shelves = num_shelves
+                most_popular_book = book
+
+        longest_book = None
+        if user.is_authenticated:
+            shelf_books = Shelf.objects.filter(user=user)
+            longest_book = shelf_books.order_by('-book__n_pages').first().book if shelf_books.exists() else None
+
+        shortest_book=None
+        if user.is_authenticated:
+            shelf2_books = Shelf.objects.filter(user=user)
+            shortest_book = shelf2_books.order_by('-book__n_pages').last().book if shelf2_books.exists() else None
 
 
-    
+    context = {
+        'top_genres': top_genres,
+        'top_authors': top_authors,
+        'most_popular_book': most_popular_book,
+        'longest_book': longest_book,
+        'shortest_book':shortest_book,
+    }
+
+    return render(request, 'user_stats.html', context)
 # import render: Renders a template with a given context.
 # When you call render, Django takes the specified template, fills it with the data from the context, and returns the complete HTML page as an HttpResponse.
 

@@ -18,6 +18,23 @@
             font-family: 'Roboto', sans-serif;
             color: #664229;
         }
+        
+
+
+.header {
+            min-height: 50vh;
+            width: 100%;
+            background-image: linear-gradient(rgba(82, 69, 49, 0.205), rgba(104, 83, 52, 0.7)), url("{{ genre.image.url }}");
+            background-position: center;
+            background-size: cover;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            color: #fff;
+        }
+
         .container {
             margin-top: 20px;
             margin-bottom: 20px;
@@ -115,14 +132,18 @@
             background-color: #259325;
             border-color: #40ff80;
         }
+
+        
     </style>
 </head>
 <body>
 
 <br>
-<h1>{{ genre.name }} Books</h1>
-<div class="container">
-    <div class="shelf-container">
+<section class="header"><div class="text-box">
+    <h1>{{ genre.name }} Books</h1>   
+    
+</div></section>
+   <div class="shelf-container">
         <div class="row">
             {% for book in books_for_genre %}
                 <div class="col-md-4 shelf-item">

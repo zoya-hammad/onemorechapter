@@ -38,6 +38,26 @@
             background-color: #259325;
             border-color: #40ff80;
         }
+
+        .btn2-primary {
+            background-color: #474040;
+            border-color: #f7e9d8;
+            color: white;
+            font-weight: 500;
+            display: block;
+            margin: auto;
+            text-align: center;
+            width: 50%;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        .btn2-primary:hover {
+            background-color: #9b8d84;
+            border-color: #cfc3be;
+            color: white;
+        }
+
+
         h2 {
             font-weight: 700;
             margin-bottom: 20px;
@@ -103,6 +123,12 @@
             </div>
         {% endfor %}
     </div>
+    <br>
+
+    <h2><a href="{% url 'books:user_stats' %}">{{ user.username }}'s Book Stats</a></h2>    
+    <a href="{% url 'books:user_stats' %}" class="btn btn2-primary mt-auto">View your most read genres, most read authors and more!</a>
+    <br>
+    <br>
 
     <div class="container">
         {% if shelf_items %}
@@ -126,5 +152,13 @@
             </div>
         {% endif %}
     </div>
+
+
+    
+   
+    <br><br>
+        
+    <br>
+
     {% endif %}
 {% endblock %}

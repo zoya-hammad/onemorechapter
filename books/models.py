@@ -26,6 +26,8 @@ class Author(models.Model):
         return self.author_name
     
 
+    
+
 
 class Genre(models.Model):
     id = models.AutoField(primary_key=True)
@@ -34,6 +36,9 @@ class Genre(models.Model):
 
     def __str__(self):
         return f'{self.id}:{self.name}'
+    
+    def __str__(self):
+        return self.name
 
 class Book(models.Model):
     id = models.AutoField(primary_key=True)

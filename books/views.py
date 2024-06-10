@@ -11,9 +11,6 @@ import random
 
 # Create your views here.
 
-from django.db.models import Count, Q
-import random
-
 def index(request):
     username = request.session.get('username')
     popular_books = Book.objects.annotate(num_shelves=Count('shelf')).order_by('-num_shelves')[:3]
@@ -212,7 +209,12 @@ def author_detail(request, author_id):
     })
 
 def genres_list(request):
-    genres = Genre.objects.all()
+    search_query = request.GET.get('search', '')
+    if search_query:
+        genres = Genre.objects.filter(name__icontains=search_query)
+    else:
+        genres = Genre.objects.all()
+
     genres_with_books = []
     for genre in genres:
         books_for_genre = Book.objects.filter(genres=genre)[:3]
@@ -220,17 +222,9 @@ def genres_list(request):
             'genre': genre,
             'books': books_for_genre
         })
-    return render(request, 'genres_list.html', {'genres_with_books': genres_with_books})
 
-'''
-def genre_detail(request, genre_id):
-    genre= Genre.objects.get(id=genre_id)
-    books_for_genre= Book.objects.filter(genre=genre)
-    return render(request, 'genre_detail.html',{
-        'genre':genre,
-        'books_for_genre':books_for_genre
+    return render(request, 'genres_list.html', {'genres_with_books': genres_with_books, 'search_query': search_query})
 
-    }) '''
 
 def genre_detail(request, genre_id):
     genre = get_object_or_404(Genre, id=genre_id)
@@ -240,6 +234,30 @@ def genre_detail(request, genre_id):
         'books_for_genre': books_for_genre
     })
 
+
+'''def search_genre(request):
+    if request.method == 'POST':
+        query = request.POST.get('search_input')
+        clean_query = query.lower().replace(' ', '') 
+        all_genre_names = Genre.objects.values_list('name', flat=True)
+        exact_match = [name for name in all_genre_names if clean_title(name) == clean_query]
+        
+        if exact_match:
+            # Redirect to the genre detail page if an exact match is found
+            genre = Genre.objects.get(name__iexact=exact_match[0])
+            return redirect('books:genre_detail', genre_id=genre.id)
+            
+        else:
+            partial_matches = [name for name in all_genre_names if clean_query in clean_title(name)]
+            matched_genres = Genre.objects.filter(name__in=partial_matches)
+            return render(request, 'genres_list.html', {
+                'genres': matched_genres,
+                'search_query' : query
+            })
+    else:
+        genres = Genre.objects.all()
+        return render(request, 'genres_list.html', {'genres': genres})
+     '''
 
 @login_required
 def recommended_top_picks(request):
@@ -285,53 +303,7 @@ def recommended_top_picks(request):
         'top_author_books': top_author_books,
     }
     return render(request, 'recommended_top_picks.html', context)
-'''
-@login_required
-def user_stats(request):
-    user = request.user
 
-    # Helper function to get top genres
-    def get_top_genres(user, limit):
-        genres = (
-            Shelf.objects.filter(user=user)
-            .values('book__genres')
-            .annotate(count=Count('book__genres'))
-            .order_by('-count')[:limit]
-        )
-        return [
-            {
-                'genre': Genre.objects.get(id=genre['book__genres']),
-                'count': genre['count']
-            }
-            for genre in genres
-        ]
-
-    # Helper function to get top authors
-    def get_top_authors(user, limit):
-        authors = (
-            Shelf.objects.filter(user=user)
-            .values('book__author')
-            .annotate(count=Count('book__author'))
-            .order_by('-count')[:limit]
-        )
-        return [
-            {
-                'author': Author.objects.get(id=author['book__author']),
-                'count': author['count']
-            }
-            for author in authors
-        ]
-
-    top_genres = get_top_genres(user, 3)
-    top_authors = get_top_authors(user, 3)
-
-    context = {
-        'top_genres': top_genres,
-        'top_authors': top_authors,
-    }
-
-    return render(request, 'user_stats.html', context)
-'''
 
 @login_required
 def user_stats(request):
@@ -411,6 +383,10 @@ def user_stats(request):
     }
 
     return render(request, 'user_stats.html', context)
+
+
+
+
 # import render: Renders a template with a given context.
 # When you call render, Django takes the specified template, fills it with the data from the context, and returns the complete HTML page as an HttpResponse.
 

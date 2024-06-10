@@ -64,11 +64,63 @@
         color: #53381c;
         text-decoration: underline;
     }
+    .search-button {
+        padding: 10px 20px;
+        background-color: #25911194; /* Pastel green */
+        border: 1px solid #a8ff61;
+        border-radius: 0 5px 5px 0;
+        color: white;
+        font-weight: 500;
+        cursor: pointer;
+        transition: background-color 0.3s;
+    }
+    .search-button:hover {
+        background-color: #259325; /* Darker pastel green on hover */
+    }
+    .alert {
+        background-color: #f8d7da; /* Light red background */
+        color: #721c24; /* Dark red text */
+        border: 1px solid #f5c6cb; /* Border matching the alert background */
+        border-radius: 10px;
+        padding: 20px;
+        margin-bottom: 20px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        display: flex;
+        align-items: center;
+    }
+    .alert-icon {
+        margin-right: 10px;
+        font-size: 24px;
+    }
+    .search-container {
+        display: flex;
+/* border-radius: 25px; */
+/*justify-content: center;*/
+margin-bottom: 20px;
+    }
+    .search-input {
+        padding: 10px;
+
+
+        border: 1px solid #664229;
+border-radius: 5px 0 0 5px;
+        outline: none;
+        font-size: 16px;
+    }
 </style>
 
-<br>
-<h1>Genres</h1>
+
 <div class="container">
+    <form method="GET" action="{% url 'books:genres_list' %}">
+        <div class="search-container">
+            <input type="text" id="searchInput" name="search" class="search-input" placeholder="Search for genres..." value="{{ request.GET.search|default:'' }}">
+            <button type="submit" class="search-button">Search</button>
+        </div>
+    </form>
+    <br>
+<h1>Genres</h1>
+<br>
+    <br>
     {% for genre_with_books in genres_with_books %}
         <div class="genre-section">
             <h2><a href="{% url 'books:genre_detail' genre_with_books.genre.id %}">{{ genre_with_books.genre.name }}</a></h2>

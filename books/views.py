@@ -304,13 +304,22 @@ def recommended_top_picks(request):
     }
     return render(request, 'recommended_top_picks.html', context)
 
+def get_top_authors(user, limit):
+    authors = (
+        Shelf.objects.filter(user=user)
+        .values('book__author')
+        .annotate(count=Count('book__author'))
+        .order_by('-count')[:limit]
+        )
+    return [
+        {
+        'author': Author.objects.get(id=author['book__author']),
+        'count': author['count']
+        }
+        for author in authors
+        ]
 
-@login_required
-def user_stats(request):
-    user = request.user
-
-    # Helper function to get top genres
-    def get_top_genres(user, limit):
+def get_top_genres(user, limit):
         genres = (
             Shelf.objects.filter(user=user)
             .values('book__genres')
@@ -324,22 +333,10 @@ def user_stats(request):
             }
             for genre in genres
         ]
-
-    # Helper function to get top authors
-    def get_top_authors(user, limit):
-        authors = (
-            Shelf.objects.filter(user=user)
-            .values('book__author')
-            .annotate(count=Count('book__author'))
-            .order_by('-count')[:limit]
-        )
-        return [
-            {
-                'author': Author.objects.get(id=author['book__author']),
-                'count': author['count']
-            }
-            for author in authors
-        ]
+    
+@login_required
+def user_stats(request):
+    user = request.user
 
     # Get top genres and authors
     top_genres = get_top_genres(user, 3)

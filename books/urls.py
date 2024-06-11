@@ -14,9 +14,7 @@ urlpatterns = [
     path('<str:username>/shelf/', views.my_shelf, name='my_shelf'),
     path('add_comment/<int:id>/<str:title>/', views.add_comment, name='add_comment'),
     path('searchbar/', views.search, name="search"),
-
     path('authors/', views.authors_list, name='authors_list'),
-    
     path('authors/<int:author_id>/', views.author_detail, name='author_detail'),
     path('genres/',views.genres_list,name='genres_list'),
     #path('genres/', views.search_genre, name='genres_list'),

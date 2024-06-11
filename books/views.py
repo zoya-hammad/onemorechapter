@@ -176,6 +176,7 @@ def book_page(request, book_name):
         "comments": comments
     })
     
+@login_required
 def add_to_shelf(request,book_id):
     if request.method == "POST":
         user = request.user
@@ -185,7 +186,8 @@ def add_to_shelf(request,book_id):
         shelf_item.save()
 
         return redirect('books:book_page', book_name=book.clean_title())
-    
+
+@login_required 
 def remove_from_shelf(request,book_id):
     if request.method == "POST":
         user = request.user
@@ -194,7 +196,8 @@ def remove_from_shelf(request,book_id):
         shelf_item.delete()
 
         return redirect('books:book_page', book_name=book.clean_title())
-    
+
+@login_required   
 def my_shelf(request,username):
     shelf_items = Shelf.objects.filter(user__username=username)
     return render(request,'shelf.html',{

@@ -9,6 +9,7 @@ from books.models import User
 from .models import Post, PostComment
 
 # Create your views here.
+@login_required
 def post_feed(request,username):
     user = User.objects.get(username=username)
     followed_users = user.follows.all()
@@ -19,10 +20,11 @@ def post_feed(request,username):
          'user': user}
     )
 
+@login_required
 def new_post(request,username):
     return render(request, 'new_post.html', {'username': username})
 
-
+@login_required
 def submit_post(request):
     if request.method == 'POST':
         user = request.user
@@ -38,7 +40,8 @@ def submit_post(request):
         })
     else:
         return render(request, 'new_post.html')
-    
+
+@login_required   
 def post_page(request,id):
     post = Post.objects.get(id=id)
     user = request.user
@@ -53,7 +56,8 @@ def post_page(request,id):
             'is_following' : is_following,
             "comments": comments
         })
-     
+
+@login_required    
 def more_posts(request, username):
     user = User.objects.get(username=username)
     followed_users = user.follows.all()
@@ -63,6 +67,7 @@ def more_posts(request, username):
         'user': user
     })
 
+@login_required
 def all_posts(request):
     posts = Post.objects.all().order_by('-timestamp')
     return render(request, 'all_posts.html', {'posts': posts})
@@ -75,12 +80,12 @@ def follow(request,user_id):
     post_id = request.POST.get('post_id')
     return redirect('posts:post_page',id=post_id )
 
+@login_required
 def unfollow(request,user_id):
     user_to_unfollow = User.objects.get(pk=user_id)
     request.user.follows.remove(user_to_unfollow)
     post_id = request.POST.get('post_id')
     return redirect('posts:post_page',id=post_id )
-
 
 @login_required
 def add_comment(request, id, title):

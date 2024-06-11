@@ -4,11 +4,10 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, HttpResponseRedirect
 from django.db import IntegrityError
-from django.db.models import Count, Q, Min
+from django.db.models import Count
 
 from .models import User, Book, Shelf, Comment, Author, Genre
 import random
-
 # Create your views here.
 
 def index(request):
@@ -45,7 +44,6 @@ def index(request):
     })
 
 
-
 def login_view(request):
     if request.method == "POST":
 
@@ -69,6 +67,57 @@ def login_view(request):
 def logout_view(request):
     logout(request)
     return HttpResponseRedirect(reverse("books:index"))
+
+# helper functions
+def get_user_top_genre(user, rank):
+        genres = Shelf.objects.filter(user=user).values('book__genres').annotate(count=Count('book__genres')).order_by('-count')
+        if rank <= len(genres):
+            return Genre.objects.get(id=genres[rank-1]['book__genres'])
+        return None
+
+def get_user_top_author(user):
+    authors = Shelf.objects.filter(user=user).values('book__author').annotate(count=Count('book__author')).order_by('-count')
+    if authors:
+        return Author.objects.get(id=authors[0]['book__author'])
+    return None
+
+def get_books_not_in_shelf(user, genre=None, author=None):
+    shelf_book_ids = Shelf.objects.filter(user=user).values_list('book_id', flat=True)
+    if genre:
+        return Book.objects.filter(genres=genre).exclude(id__in=shelf_book_ids)[:6]
+    if author:
+        return Book.objects.filter(author=author).exclude(id__in=shelf_book_ids)[:6]
+    return Book.objects.exclude(id__in=shelf_book_ids)[:6]
+
+def get_top_authors(user, limit):
+    authors = (
+        Shelf.objects.filter(user=user)
+        .values('book__author')
+        .annotate(count=Count('book__author'))
+        .order_by('-count')[:limit]
+        )
+    return [
+        {
+        'author': Author.objects.get(id=author['book__author']),
+        'count': author['count']
+        }
+        for author in authors
+        ]
+
+def get_top_genres(user, limit):
+        genres = (
+            Shelf.objects.filter(user=user)
+            .values('book__genres')
+            .annotate(count=Count('book__genres'))
+            .order_by('-count')[:limit]
+        )
+        return [
+            {
+                'genre': Genre.objects.get(id=genre['book__genres']),
+                'count': genre['count']
+            }
+            for genre in genres
+        ]
 
 def register(request):
     if request.method == "POST":
@@ -263,27 +312,6 @@ def genre_detail(request, genre_id):
 def recommended_top_picks(request):
     user = request.user
 
-    # Helper functions to get top genres and author
-    def get_user_top_genre(user, rank):
-        genres = Shelf.objects.filter(user=user).values('book__genres').annotate(count=Count('book__genres')).order_by('-count')
-        if rank <= len(genres):
-            return Genre.objects.get(id=genres[rank-1]['book__genres'])
-        return None
-
-    def get_user_top_author(user):
-        authors = Shelf.objects.filter(user=user).values('book__author').annotate(count=Count('book__author')).order_by('-count')
-        if authors:
-            return Author.objects.get(id=authors[0]['book__author'])
-        return None
-
-    def get_books_not_in_shelf(user, genre=None, author=None):
-        shelf_book_ids = Shelf.objects.filter(user=user).values_list('book_id', flat=True)
-        if genre:
-            return Book.objects.filter(genres=genre).exclude(id__in=shelf_book_ids)[:6]
-        if author:
-            return Book.objects.filter(author=author).exclude(id__in=shelf_book_ids)[:6]
-        return Book.objects.exclude(id__in=shelf_book_ids)[:6]
-
     # Get user's top genres and author
     top_genre1 = get_user_top_genre(user, 1)
     top_genre2 = get_user_top_genre(user, 2)
@@ -304,35 +332,6 @@ def recommended_top_picks(request):
     }
     return render(request, 'recommended_top_picks.html', context)
 
-def get_top_authors(user, limit):
-    authors = (
-        Shelf.objects.filter(user=user)
-        .values('book__author')
-        .annotate(count=Count('book__author'))
-        .order_by('-count')[:limit]
-        )
-    return [
-        {
-        'author': Author.objects.get(id=author['book__author']),
-        'count': author['count']
-        }
-        for author in authors
-        ]
-
-def get_top_genres(user, limit):
-        genres = (
-            Shelf.objects.filter(user=user)
-            .values('book__genres')
-            .annotate(count=Count('book__genres'))
-            .order_by('-count')[:limit]
-        )
-        return [
-            {
-                'genre': Genre.objects.get(id=genre['book__genres']),
-                'count': genre['count']
-            }
-            for genre in genres
-        ]
     
 @login_required
 def user_stats(request):

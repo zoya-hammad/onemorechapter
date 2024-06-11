@@ -42,7 +42,7 @@ class Genre(models.Model):
 
 class Book(models.Model):
     id = models.AutoField(primary_key=True)
-    title = models.CharField(max_length=30)
+    title = models.CharField(max_length=45)
     n_pages = models.IntegerField()
     image = models.ImageField(upload_to='images/books')
     publication_year = models.IntegerField()

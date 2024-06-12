@@ -93,6 +93,7 @@ background-color: #ece4d8;
             {% endfor %}
         </ul>
 
+        {% if user.is_authenticated %}
         {% if not in_shelf %}
             <form method="post" action="{% url 'books:add_to_shelf' book.id %}">
                 {% csrf_token %}
@@ -104,9 +105,12 @@ background-color: #ece4d8;
                 <button type="submit" class="btn btn-danger">Remove from Shelf</button>
             </form>
         {% endif %}
+        {% endif %}
+
     </div>
 </div>
 
+{% if user.is_authenticated %}
 <div class="card mt-4">
     <div class="card-body">
         <h5 class="card-title">Add Comment</h5>
@@ -119,6 +123,7 @@ background-color: #ece4d8;
         </form>
     </div>
 </div>
+{% endif %}
 
 <div class="card mt-4">
     <div class="card-body">

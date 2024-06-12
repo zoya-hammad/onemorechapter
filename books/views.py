@@ -11,6 +11,9 @@ import random
 # Create your views here.
 
 def index(request):
+    return redirect('books:home_page')
+
+def home_page(request):
     username = request.session.get('username')
     popular_books = Book.objects.annotate(num_shelves=Count('shelf')).order_by('-num_shelves')[:3]
 

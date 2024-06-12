@@ -41,7 +41,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'books',
     'posts',
-    'httpcats'
+    'httpcats',
+    'bookbot'
 ]
 
 MIDDLEWARE = [

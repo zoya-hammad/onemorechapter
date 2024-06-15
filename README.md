@@ -38,7 +38,7 @@
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/zoya-hammad/countyourpages.git
+   git clone https://github.com/zoya-hammad/onemorechapter.git
    ```
 2. Navigate to the project directory:
    ```bash

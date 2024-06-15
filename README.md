@@ -85,7 +85,3 @@ This project uses the following licenses:
 - [Django Documentation](https://docs.djangoproject.com/en/5.0/)
 - [HTTP Cats API](https://github.com/httpcats/http.cat)
 - [Bootstrap](https://getbootstrap.com/)
-
----
-
-This condensed version maintains essential information while keeping the README manageable. You can add or remove sections as needed based on the specific requirements and audience of your project.

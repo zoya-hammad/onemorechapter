@@ -26,6 +26,10 @@
 - **Database**: SQLite3 database with multiple relations.
 - **User Analytics**: Track reading habits and statistics.
 
+## Entity Relationship Diagram
+  ![image](https://github.com/zoya-hammad/onemorechapter/assets/116413504/eb53fbb6-e70e-42ac-921f-e65793bb6b84)
+
+
 ## Future Additions
 
 - More user shelves (e.g., Currently Reading, To Be Read).

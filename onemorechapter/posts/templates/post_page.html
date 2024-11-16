@@ -1,0 +1,108 @@
+{% extends 'navbar.html' %}
+{% block body %}
+    
+<style>
+body{
+background-color: #fbf6ef;
+font-family: 'Roboto', sans-serif; /* Font style */
+color: #664229;
+}
+
+h1{
+        margin-top: 20px;
+        margin-bottom: 20px;
+color: #664229;
+
+    
+    }
+    .post-card {
+background-color: #f9f9f9;
+border: 1px solid #ebdfcc;
+        border-radius: 5px;
+        padding: 15px;
+        margin-bottom: 20px;
+    }
+    .post-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    .post-header h3 {
+        margin: 0;
+        font-size: 18px;
+    }
+    .post-content {
+        margin-top: 10px;
+    }
+    .post-content p {
+        margin: 0;
+    }
+    .post-content img {
+        max-width: 100%;
+        height: auto;
+        margin-top: 10px;
+    }
+    .post-footer {
+        margin-top: 10px;
+    }
+    .post-footer small {
+        font-size: 12px;
+    }
+
+</style>
+    <h1>{{ post.title }}</h1>
+    <p>Posted by: {{ post.user.username }}</p>
+    <p>Posted on: {{ post.timestamp }}</p>
+    <p>{{ post.text }}</p>
+    {% if post.image %}
+        <img src="{{ post.image.url }}" alt="Post Image">
+    {% endif %}
+
+{% if user.is_authenticated %}
+    {% if is_following %}
+        <form action="{% url 'posts:unfollow_user' user_id=post.user.id%}" method="post">
+            {% csrf_token %}
+            <input type="hidden" name="post_id" value="{{ post.id }}">
+            <button type="submit" class="btn btn-danger">Unfollow</button>
+        </form>
+    {% else %}
+        <form action="{% url 'posts:follow_user' user_id=post.user.id %}" method="post">
+            {% csrf_token %}
+            <input type="hidden" name="post_id" value="{{ post.id }}">
+            <button type="submit" class="btn btn-success">Follow</button>
+        </form>
+    {% endif %}
+{% endif %}
+
+
+<div class="card mt-4">
+    <div class="card-body">
+        <h5 class="card-title">Add Comment</h5>
+        <form id="comment-form" method="POST" action="{% url 'posts:add_comment' id=post.id title=post.title %}">
+            {% csrf_token %}
+            <div class="form-group">
+                <textarea id="content" name="content" class="form-control mb-2" rows="3" placeholder="Write a comment"></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+    </div>
+</div>
+
+<div class="card mt-4">
+    <div class="card-body">
+        <h5 class="card-title">Comments</h5>
+        <div id="comments-container">
+            {% for comment in comments %}
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <p class="card-text">{{ comment.text }}</p>
+                        <p class="card-text"><small class="text-muted">By: {{ comment.user.username }} | {{ comment.created_at }}</small></p>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+                  

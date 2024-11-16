@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}One More Chapter{% endblock %}</title>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+    <style>
+        .navbar-custom {
+            background-color: #002147; 
+        }
+
+        .navbar-nav {
+            align-items: center;
+            display: flex;
+            flex-direction: row;
+        }
+
+        .search-form {
+            margin-right: 10px;
+        }
+
+        .search-input {
+            background-color: rgba(0, 33, 71, 0.7);
+            border: 1px solid #f1e7e7;
+            color: #ffffff;
+            padding: 0.375rem 0.75rem;
+            border-radius: 20px;
+            width: 200px;
+            transition: background-color 0.3s, border-color 0.3s, color 0.3s;
+        }
+
+        .search-input::placeholder {
+            color: #ffffff;
+        }
+
+        .search-input:focus {
+            background-color: rgba(0, 33, 71, 0.7);
+            border-color: #666666;
+            color: #ffffff;
+            outline: none;
+            box-shadow: none;
+        }
+
+        .search-input:-webkit-autofill,
+        .search-input:-webkit-autofill:hover, 
+        .search-input:-webkit-autofill:focus, 
+        .search-input:-webkit-autofill:active {
+            -webkit-box-shadow: 0 0 0px 1000px rgba(0, 33, 71, 0.7) inset !important;
+            -webkit-text-fill-color: #ffffff !important;
+        }
+
+        .sign-out-icon {
+            color: #ffffff;
+        }
+
+        .sign-out-btn {
+            color: #ffffff;
+        }
+
+        .dropdown-item {
+            color: grey !important;
+        }
+
+        .dropdown-toggle:focus {
+            box-shadow: none !important;
+            outline: none !important;
+        }
+
+        .nav-link {
+            color: #ffffff !important;
+        }
+        
+        .nav-link:hover {
+            color: #dddddd !important;
+        }
+
+        .nav-item.dropdown:hover .dropdown-menu {
+            display: block;
+        }
+
+        .dropdown-toggle::after {
+            display: inline-block;
+            margin-left: .255em;
+            vertical-align: .255em;
+            content: "\f078"; 
+            font-family: 'FontAwesome';
+        }
+
+        .nav-item.dropdown .nav-link::after {
+            display: inline-block;
+            margin-left: .255em;
+            vertical-align: .255em;
+            content: "\f078"; /* FontAwesome icon for dropdown */
+            font-family: 'FontAwesome';
+        }
+
+        .nav-item.dropdown > .dropdown-toggle::after {
+            display: none; /* Hide the dropdown icon on the main "Genres" link */
+        }
+
+        .nav-item.dropdown > .dropdown-toggle.nav-link {
+            padding-right: 1.5rem; /* Add padding to the right to avoid overlap */
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark navbar-custom">
+        <div class="container">
+            <a class="navbar-brand" href="{% url 'books:index' %}">onemorechapter</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ml-auto">
+                    {% if user.is_authenticated %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'books:my_shelf' username=user.username %}">My Shelf</a>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="{% url 'books:genres_list' %}" id="navbarDropdown" role="button">
+                                Genres
+                            </a>
+                            <div class="dropdown-menu" aria-labelledby="navbarDropdown" style="background-color: #002147;">
+                                {% for genre in genres %}
+                                    <a class="dropdown-item" href="{% url 'books:genre_detail' genre.id %}" style="color: grey;">{{ genre.name }}</a>
+                                {% endfor %}
+                            </div>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'books:authors_list' %}">Authors</a>
+                        </li>
+
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'posts:post_feed' username=user.username %}">Feed</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'posts:new_post' username=user.username %}">New Post</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'posts:all_posts' %}">All Posts</a>
+                        </li>
+                        <form class="form-inline search-form" method="post" action="{% url 'books:search' %}">
+                            {% csrf_token %}
+                            <input class="form-control mr-sm-2 search-input" name="search_input" type="search" aria-label="Search">
+                            <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+                        </form>
+
+                        <li class="nav-item">
+                            <a class="nav-link sign-out-btn" href="{% url 'books:logout' %}">
+                                <span class="sign-out-icon" data-toggle="tooltip" title="Sign Out">
+                                    <i class="fas fa-sign-out-alt"></i>
+                                </span>
+                            </a>
+                        </li>
+                    {% else %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'books:login' %}">Sign In</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'books:register' %}">Register</a>
+                        </li>
+                    {% endif %}
+                    {% if not user.is_authenticated %}
+                        <form class="form-inline search-form" method="post" action="{% url 'books:search' %}">
+                            {% csrf_token %}
+                            <input class="form-control mr-sm-2 search-input" name="search_input" type="search" aria-label="Search">
+                            <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+                        </form>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        {% block body %}{% endblock %}
+    </div>
+
+</body>
+</html>
+
+

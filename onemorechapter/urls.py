@@ -22,8 +22,10 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('countyourpages/', include('books.urls', namespace="books")),
-    path('',include('posts.urls', namespace="posts"))
+    path('', include('books.urls', namespace="books")),
+    path('countyourpages/',include('posts.urls', namespace="posts")),
+    path('',include('httpcats.urls', namespace="httpcats")),
+    path('countyourpages/talk/', include('bookbot.urls', namespace="bookbot"))
 ]
 
 if settings.DEBUG:

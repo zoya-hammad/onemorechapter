@@ -1,0 +1,148 @@
+{% extends "navbar.html" %}
+
+{% block title %}
+    Genres
+{% endblock %}
+
+{% block body %}
+<style>
+    body {
+        background-color: #fbf6ef; 
+        font-family: 'Roboto', sans-serif; 
+        color: #664229;
+    }
+    .container {
+        margin-top: 20px;
+    }
+    .card {
+        background-color: #ece4d8;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px #664229;
+        margin-bottom: 20px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        height: 100%;
+    }
+    .card-img-top {
+        height: 200px; 
+        object-fit: contain; 
+        border-top-left-radius: 10px;
+        border-top-right-radius: 10px;
+    }
+    .card-body {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        text-align: center;
+        padding: 10px;
+    }
+    .card-title {
+        font-weight: 700;
+        font-size: 1.2rem;
+        margin-bottom: 10px;
+    }
+    .btn-primary {
+        background-color: #25911194; 
+        border-color: #a8ff61; 
+    }
+    .btn-primary:hover {
+        background-color: #259325; 
+        border-color: #40ff80; 
+    }
+    h1 {
+        font-weight: 700;
+        margin-bottom: 20px;
+        text-align: center;
+    }
+    a {
+        color: #664229;
+        text-decoration: none;
+    }
+    a:hover {
+        color: #53381c;
+        text-decoration: underline;
+    }
+    .search-button {
+        padding: 10px 20px;
+        background-color: #25911194; 
+        border: 1px solid #a8ff61;
+        border-radius: 0 5px 5px 0;
+        color: white;
+        font-weight: 500;
+        cursor: pointer;
+        transition: background-color 0.3s;
+    }
+    .search-button:hover {
+        background-color: #259325; 
+    }
+    .alert {
+        background-color: #f8d7da; 
+        color: #721c24; 
+        border: 1px solid #f5c6cb; 
+        border-radius: 10px;
+        padding: 20px;
+        margin-bottom: 20px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        display: flex;
+        align-items: center;
+    }
+    .alert-icon {
+        margin-right: 10px;
+        font-size: 24px;
+    }
+    .search-container {
+        display: flex;
+    margin-bottom: 20px;
+    }
+    .search-input {
+        padding: 10px;
+
+
+        border: 1px solid #664229;
+border-radius: 5px 0 0 5px;
+        outline: none;
+        font-size: 16px;
+    }
+</style>
+
+
+<div class="container">
+    <form method="GET" action="{% url 'books:genres_list' %}">
+        <div class="search-container">
+            <input type="text" id="searchInput" name="search" class="search-input" placeholder="Search for genres..." value="{{ request.GET.search|default:'' }}">
+            <button type="submit" class="search-button">Search</button>
+        </div>
+    </form>
+    <br>
+<h1>Genres</h1>
+<br>
+    <br>
+    {% for genre_with_books in genres_with_books %}
+        <div class="genre-section">
+            <h2><a href="{% url 'books:genre_detail' genre_with_books.genre.id %}">{{ genre_with_books.genre.name }}</a></h2>
+            <div class="row">
+                {% for book in genre_with_books.books %}
+                    <div class="col-md-4">
+                        <div class="card">
+                            <img src="{{ book.image.url }}" class="card-img-top" alt="{{ book.title }}">
+                            <div class="card-body">
+                                <h5 class="card-title">{{ book.title }}</h5>
+                                <p class="card-text">by {{ book.author.author_name }}</p>
+                                <a href="{% url 'books:book_page' book.clean_title %}" class="btn btn-primary">View Book</a>
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+                {% endfor %}
+            </div>
+        </div>
+        <br>
+        <br>
+    {% endfor %}
+    
+    
+    
+</div>
+
+{% endblock %}

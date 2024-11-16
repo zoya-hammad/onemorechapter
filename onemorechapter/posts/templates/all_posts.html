@@ -1,0 +1,103 @@
+{% extends "navbar.html" %}
+
+{% block title %}
+    All Posts
+{% endblock %}
+
+{% block body %}
+    <h1>All Posts</h1>
+    
+    <style>
+        body {
+background-color: #fbf6ef;
+            font-family: 'Roboto', sans-serif;
+            color: #664229;
+        }
+
+        h1 {
+            margin-top: 20px;
+            margin-bottom: 20px;
+            color: #664229;
+        }
+
+        .post-card {
+            background-color: #f9f9f9;
+            border: 1px solid #ebdfcc;
+            border-radius: 5px;
+            padding: 15px;
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .post-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .post-header h3 {
+            margin: 0;
+            font-size: 18px;
+        }
+
+        .post-content {
+            margin-top: 10px;
+        }
+
+        .post-content p {
+            margin: 0;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-line-clamp: 5;
+            -webkit-box-orient: vertical;
+        }
+
+        .post-content img {
+            max-width: 100%;
+            height: auto;
+            margin-top: 10px;
+        }
+
+        .post-footer {
+            margin-top: 10px;
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .post-footer p {
+            margin: 0;
+            font-size: 12px;
+        }
+
+        .read-more-link {
+            color: #007bff;
+            text-decoration: none;
+            font-weight: bold;
+        }
+    </style>
+    
+    <div class="post-feed">
+        {% for post in posts %}
+            <div class="post-card">
+                <div class="post-header">
+                    <h3><strong>{{ post.title }}</strong></h3>
+                    <small> by {{ post.user.username }} || {{ post.timestamp }}</small>
+                </div>
+                <div class="post-content">
+                    <p>{{ post.text }}</p>
+                    {% if post.image %}
+                        <img src="{{ post.image.url }}" alt="Post image">
+                    {% endif %}
+                </div>
+                <div class="post-footer">
+                    <a class="read-more-link" href="{% url 'posts:post_page' post.id %}">Read More</a>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% endblock %}

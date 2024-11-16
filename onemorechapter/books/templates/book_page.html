@@ -1,0 +1,147 @@
+{% extends "navbar.html" %}
+
+{% block title %}
+    {{ book.title }}
+{% endblock %}
+
+{% block body %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ book.title }}</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+background-color: #fbf6ef;
+            font-family: 'Roboto', sans-serif;
+            color: #664229;
+        }
+        .container {
+            margin-top: 20px;
+        }
+        .book-details {
+background-color: #ece4d8;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px #664229;
+            margin-bottom: 20px;
+            font-family:Arial, Helvetica, sans-serif;
+        }
+        .book-image {
+            max-width: 200px;
+            height: auto;
+            margin-bottom: 20px;
+        }
+        .btn-primary {
+            background-color: #002147; 
+            border-color: #032955;
+            font-weight: 500;
+        }
+        .btn-primary:hover {
+            background-color: #093e7a; 
+            border-color: #40ff80;
+        }
+        .btn-danger {
+            background-color: #e82c2994;
+            border-color: #ffbb91;
+            font-weight: 500;
+        }
+        .btn-danger:hover {
+            background-color: #f85c5c;
+            border-color: #fe4a4a;
+        }
+        .card {
+            background-color: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px #664229;
+            margin-bottom: 20px;
+        }
+        #comment-form {
+            margin-bottom: 20px;
+        }
+        .card-text {
+            margin-bottom: 0;
+        }
+        h1, h2, h3, h5 {
+            font-weight: 700;
+        }
+        p, li, a {
+            font-weight: 400;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="book-details">
+        <h1>{{ book.title }}</h1>
+        <img src="{{ book.image.url }}" alt="{{ book.title }}" class="img-fluid book-image">
+        <p><strong>Author:</strong> {{ book.author.author_name }}</p>
+        <p><strong>Genres:</strong> 
+            {% for genre in book.genres.all %}
+                {{ genre.name }}{% if not forloop.last %}, {% endif %}
+            {% endfor %}
+        </p>
+        <p><strong>Number of Pages:</strong> {{ book.n_pages }}</p>
+        <p><strong>Publication Year:</strong> {{ book.publication_year }}</p>
+        <h3>Other books by {{ book.author.author_name }}</h3>
+        <ul>
+            {% for other_book in other_books %}
+                <li><a href="{% url 'books:book_page' other_book.title %}">{{ other_book.title }}</a></li>
+            {% endfor %}
+        </ul>
+
+        {% if user.is_authenticated %}
+        {% if not in_shelf %}
+            <form method="post" action="{% url 'books:add_to_shelf' book.id %}">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-primary">Add to Shelf</button>
+            </form>
+        {% else %}
+            <form method="post" action="{% url 'books:remove_from_shelf' book.id %}">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-danger">Remove from Shelf</button>
+            </form>
+        {% endif %}
+        {% endif %}
+
+    </div>
+</div>
+
+{% if user.is_authenticated %}
+<div class="card mt-4">
+    <div class="card-body">
+        <h5 class="card-title">Add Comment</h5>
+        <form id="comment-form" method="POST" action="{% url 'books:add_comment' book.id book.title %}">
+            {% csrf_token %}
+            <div class="form-group">
+                <textarea id="content" name="content" class="form-control mb-2" rows="3" placeholder="Write a comment"></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+    </div>
+</div>
+{% endif %}
+
+<div class="card mt-4">
+    <div class="card-body">
+        <h5 class="card-title">Comments</h5>
+        <div id="comments-container">
+            {% for comment in comments %}
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <p class="card-text">{{ comment.text }}</p>
+                        <p class="card-text"><small class="text-muted">By: {{ comment.user.username }} | {{ comment.created_at }}</small></p>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+</body>
+</html>
+
+
+{% endblock%}

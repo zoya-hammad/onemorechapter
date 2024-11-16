@@ -1,0 +1,168 @@
+{% extends "navbar.html" %}
+
+{% block body %}
+    <style>
+        body {
+            background-color: #fbf6ef;
+            font-family: 'Roboto', sans-serif;
+            color: #664229;
+        }
+        .container {
+            margin-top: 20px;
+        }
+        .card {
+            margin-bottom: 20px;
+            height: 100%;
+            background-color: rgba(255, 255, 255, 0.9); 
+        }
+        .card-body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .card-title {
+            font-weight: 700;
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+        }
+        .card-text {
+            font-weight: 400;
+            margin-bottom: 15px;
+        }
+        .btn-primary {
+            background-color: #25911194;
+            border-color: #a8ff61;
+            font-weight: 500;
+        }
+        .btn-primary:hover {
+            background-color: #259325;
+            border-color: #40ff80;
+        }
+
+        .btn2-primary {
+            
+            color: white;
+            
+            background-color: #9b8d84;
+            border-color: #cfc3be;
+            font-weight: 500;
+            display: block;
+            margin: auto;
+            text-align: center;
+            width: 50%;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        .btn2-primary:hover {
+            background-color: #474040;
+            border-color: #f7e9d8;
+            color: white;
+        }
+
+
+        h2 {
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+        a {
+            color: #664229;
+            text-decoration: none;
+        }
+        a:hover {
+            color: #53381c;
+            text-decoration: underline;
+        }
+        .popular-books {
+            display: flex;
+            justify-content: space-between;
+        }
+        .popular-books .card {
+            width: 30%;
+            margin-right: 10px;
+        }
+        .card-img-top {
+            height: 200px;
+            width: 100%;
+            object-fit: contain;
+        }
+        .recommended-books {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+        }
+        .recommended-books .card {
+            width: 30%;
+            margin-right: 10px;
+        }
+    </style>
+
+    
+
+    <h1>Most Popular Books This Month</h1>
+    <div class="popular-books">
+        {% for book in popular_books %}
+            <div class="card">
+                <img src="{{ book.image.url }}" alt="{{ book.title }}" class="card-img-top">
+                <div class="card-body">
+                    <h2 class="card-title">{{ book.title }}</h2>
+                    <p class="card-text">Author: {{ book.author }}</p>
+                    <p class="card-text">Number of Shelves: {{ book.num_shelves }}</p>
+                    <a href="{% url 'books:book_page' book.clean_title %}" class="btn btn-primary">View Details</a>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+
+    {% if user.is_authenticated %}
+    <h2><a href="{% url 'books:recommended_top_picks' %}">Recommended Top Picks</a></h2>
+    <div class="recommended-books">
+        {% for book in recommended_books %}
+            <div class="card">
+                <img src="{{ book.image.url }}" alt="{{ book.title }}" class="card-img-top">
+                <div class="card-body">
+                    <h2 class="card-title">{{ book.title }}</h2>
+                    <p class="card-text">Author: {{ book.author }}</p>
+                    <a href="{% url 'books:book_page' book.clean_title %}" class="btn btn-primary">View Details</a>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+    <br>
+
+    <h2>{{ user.username }}'s Book Stats</h2>    
+    <a href="{% url 'books:user_stats' %}" class="btn btn2-primary mt-auto">View your most read genres, most read authors and more!</a>
+    <br>
+    <br>
+
+    <div class="container">
+        {% if shelf_items %}
+            <h2 class="mt-3 mb-4"><a href="{% url 'books:my_shelf' username %}">Shelf</a></h2>
+
+            <div class="row">
+                {% for item in shelf_items %}
+                    {% if forloop.counter <= 3 %}
+                        <div class="col-md-4 mb-4">
+                            <div class="card h-100">
+                                <img src="{{ item.book.image.url }}" class="card-img-top" alt="{{ item.book.title }}">
+                                <div class="card-body">
+                                    <h5 class="card-title">{{ item.book.title }}</h5>
+                                    <p class="card-text">{{ item.book.author.author_name }}</p>
+                                    <a href="{% url 'books:book_page' item.book.clean_title %}" class="btn btn-primary mt-auto">View Details</a>
+                                </div>
+                            </div>
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        {% endif %}
+    </div>
+
+
+    
+   
+    <br><br>
+        
+    <br>
+
+    {% endif %}
+{% endblock %}

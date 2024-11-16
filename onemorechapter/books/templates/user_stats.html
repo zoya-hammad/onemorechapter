@@ -1,0 +1,151 @@
+{% extends "navbar.html" %}
+
+{% block body %}
+<style>
+    body {
+        background-color: #fbf6ef;
+        font-family: 'Roboto', sans-serif;
+        color: #664229;
+    }
+    .container {
+        margin-top: 20px;
+    }
+    .card {
+        margin-bottom: 20px;
+        height: 100%;
+        background-color: rgba(255, 255, 255, 0.9); /* Translucent white background */
+    }
+    .card-body {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+    .card-title {
+        font-weight: 700;
+        font-size: 1.2rem;
+        margin-bottom: 10px;
+    }
+    .card-text {
+        font-weight: 400;
+        margin-bottom: 15px;
+    }
+    .btn-primary {
+        background-color: #25911194;
+        border-color: #a8ff61;
+        font-weight: 500;
+    }
+    .btn-primary:hover {
+        background-color: #259325;
+        border-color: #40ff80;
+    }
+    h2 {
+        font-weight: 700;
+        margin-bottom: 20px;
+    }
+    a {
+        color: #664229;
+        text-decoration: none;
+    }
+    a:hover {
+        color: #53381c;
+        text-decoration: underline;
+    }
+    .card-img-top {
+        height: 200px; /* Adjust as needed */
+        object-fit: cover; /* Ensure images cover the area */
+        border-radius: 5px; /* Optional: Add rounded corners */
+    }
+</style>
+
+<div class="container">
+    <h1>{{ user.username }}'s Book Stats</h1>
+    <br>
+
+    <!-- Section 1: Top Genres -->
+    <h2>Top Genres Read</h2>
+    <div class="row">
+        {% for item in top_genres %}
+            <div class="col-md-4 mb-4">
+                <div class="card h-100">
+                    <img src="{{ item.genre.image.url }}" class="card-img-top" alt="{{ item.genre.name }}">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ item.genre.name }}</h5>
+                        <p class="card-text">Books Read: {{ item.count }}</p>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+
+    <!-- Section 2: Top Authors -->
+    <h2>Top Authors in Your Shelf</h2>
+    <div class="row">
+        {% for item in top_authors %}
+            <div class="col-md-4 mb-4">
+                <div class="card h-100">
+                    <img src="{{ item.author.image.url }}" class="card-img-top" alt="{{ item.author.author_name }}">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ item.author.author_name }}</h5>
+                        <p class="card-text">Books in Shelf: {{ item.count }}</p>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+
+    <!-- Section 3: Most Popular Book in Your Shelf -->
+    {% if most_popular_book %}
+        <h2>Most Popular Book in Your Shelf</h2>
+        <div class="row">
+            <div class="col-md-4 mb-4">
+                <div class="card h-100">
+                    <img src="{{ most_popular_book.image.url }}" class="card-img-top" alt="{{ most_popular_book.title }}">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ most_popular_book.title }}</h5>
+                        <p class="card-text">Author: {{ most_popular_book.author.author_name }}</p>
+                        <p class="card-text">Number of Shelves: {{ most_popular_book.shelf_set.count }}</p>
+                        <a href="{% url 'books:book_page' most_popular_book.clean_title %}" class="btn btn-primary">View Details</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+
+    <!-- Section 4: Longest Book That You Have Read -->
+    {% if longest_book %}
+        <h2>Longest Book That You Have Read</h2>
+        <div class="row">
+            <div class="col-md-4 mb-4">
+                <div class="card h-100">
+                    <img src="{{ longest_book.image.url }}" class="card-img-top" alt="{{ longest_book.title }}">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ longest_book.title }}</h5>
+                        <p class="card-text">Author: {{ longest_book.author.author_name }}</p>
+                        <p class="card-text">Number of Pages: {{ longest_book.n_pages }}</p>
+                        <a href="{% url 'books:book_page' longest_book.clean_title %}" class="btn btn-primary">View Details</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+
+    <!-- Section 5: Shortest Book That You Have Read -->
+    {% if shortest_book %}
+        <h2>Shortest Book That You Have Read</h2>
+        <div class="row">
+            <div class="col-md-4 mb-4">
+                <div class="card h-100">
+                    <img src="{{ shortest_book.image.url }}" class="card-img-top" alt="{{ shortest_book.title }}">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ shortest_book.title }}</h5>
+                        <p class="card-text">Author: {{ shortest_book.author.author_name }}</p>
+                        <p class="card-text">Number of Pages: {{ shortest_book.n_pages }}</p>
+                        <a href="{% url 'books:book_page' shortest_book.clean_title %}" class="btn btn-primary">View Details</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+</div>
+
+{% endblock %}

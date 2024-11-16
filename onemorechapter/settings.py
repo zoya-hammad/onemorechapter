@@ -40,7 +40,9 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'books',
-    'posts'
+    'posts',
+    'httpcats',
+    'bookbot'
 ]
 
 MIDDLEWARE = [
@@ -51,6 +53,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'httpcats.middleware.CustomHttpCatsMiddleware'   # added custom middleware
 ]
 
 ROOT_URLCONF = 'onemorechapter.urls'
@@ -66,6 +69,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'books.context_processors.genres_processor' # added this line so that list of genres is available throughout the code ( for navbar functionality )
             ],
         },
     },
@@ -129,3 +133,4 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 MEDIA_URL = 'images/'
 MEDIA_ROOT = os.path.join(BASE_DIR,'images')
+
